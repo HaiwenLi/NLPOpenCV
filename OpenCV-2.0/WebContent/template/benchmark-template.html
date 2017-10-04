@@ -1,0 +1,567 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+<title>简历评测与提升</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="@IMAGE/icon/logo.ico" type="image/x-icon>" />
+
+<link rel="stylesheet" href="@CSS/resume-base.css" />
+<link rel="stylesheet" href="@CSS/bootstrap.min.css" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link rel="stylesheet" href="@CSS/BeAlert.css" />
+<link rel="stylesheet" href="@CSS/normalize.css" />
+<link rel="stylesheet" href="@CSS/main.css" />
+<link rel="stylesheet" href="@CSS/tools.css" />
+</head>
+
+<body>
+	<header id="header"> <nav
+		class="navbar navbar-default st-navbar">
+	<div class="container">
+		<div class="navbar-header logo">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+				aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a id="indexPage" href="@ROOT@index.jsp">
+				<p style="font-size: 26px; font-weight: 600;">OpenCV</p>
+				<p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p>
+			</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<button id="nav-uploadbtn" class="nav-uploadbtn" type="button"
+						style="width: 150px">再次评测</button>
+				</li>
+				<li><a href="@ROOT@team.jsp" target="_blank">我们</a></li>
+				<li class="dropdown"><a href="#" id="username"
+					class="dropdown-toggle" data-toggle="dropdown">Username&nbsp;<b
+						class="caret"></b></a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+						<li class="hide"><a href="#user-center" tabindex="-1"
+							data-toggle="tab"> <i class="fa fa-address-card"
+								aria-hidden="true"></i>用户中心
+						</a></li>
+						<li><a id="signout" tabindex="-1" data-toggle="tab"> <i
+								class="fa fa-sign-out" aria-hidden="true"></i>登出
+						</a></li>
+					</ul></li>
+			</ul>
+		</div>
+	</div>
+	</nav> </header>
+
+	<div class="container-fluid content-wrapper">
+		<div class="row subnav">
+			<div class="col-md-4 col-md-offset-8">
+				<div class="tabs">
+					<label class="tab0" name="dashboard" data-value="0">查看分数</label> <label
+						class="tab1" name="competency" data-value="1">能力</label> <label
+						class="tab2" name="presentation" data-value="2">表达</label> <label
+						class="tab3" name="format" data-value="3">格式</label> <label
+						class="tab4 hide" name="mystery-services" data-value="4">神秘服务</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="left-panel" class="col-md-8" style="padding-right: 0">
+				<!-- Resume content -->
+				<div id="resume-wrapper">
+				</div>
+			</div>
+
+			<!-- Dashboard, Competency, Presentation, Format and Services -->
+			<div class="col-md-4">
+				<div id="right-panel" class="content">
+					<!-- Dashboard -->
+					<div class="dashboard-wrapper" data-id="dashboard-wrapper">
+						<!-- Hints for Users -->
+						<div id="dashboard-summary" class="background-info">
+							很抱歉，您的简历多我们来说有点困难。暂时无法分析、处理。您可以申请我们的人工服务！
+							<!-- 你的简历处于Top50%，求职成功率一般，还要继续改进！-->
+						</div>
+
+						<!-- Total scores -->
+						<div class="group" style="border-bottom: 1px solid #d0d0d0;">
+							<canvas id="dashboard-score" height="160"></canvas>
+						</div>
+						<div class="group" data-id="competency-score">
+							<div class="header addline">
+								<p class="dashboard-header">能力</p>
+							</div>
+							<div class="barGraph">
+								<ul class="graph">
+									<span class="graph-barBack">
+										<li id="competency-analytical-score" class="graph-bar"
+										data-value="0"><span class="graph-legend">分析</span></li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="competency-leadership-score" class="graph-bar"
+										data-value="0"><span class="graph-legend">领导</span></li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="competency-teamwork-score" class="graph-bar"
+										data-value="0"><span class="graph-legend">团队</span></li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="competency-communication-score" class="graph-bar"
+										data-value="0"><span class="graph-legend">沟通</span></li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="competency-initiative-score" class="graph-bar"
+										data-value="0"><span class="graph-legend">主动</span></li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+								</ul>
+							</div>
+						</div>
+
+						<div class="group" data-id="presentation-score">
+							<div class="header addline">
+								<p class="dashboard-header">表达</p>
+							</div>
+							<div class="barGraph">
+								<ul class="graph">
+									<span class="graph-barBack">
+										<li id="presentation-1-score" class="graph-bar" data-value="0">
+											<span class="graph-legend">动词引导</span>
+									</li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="presentation-2-score" class="graph-bar" data-value="0">
+											<span class="graph-legend">数字量化</span>
+									</li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="presentation-3-score" class="graph-bar" data-value="0">
+											<span class="graph-legend">句子长度</span>
+									</li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="presentation-4-score" class="graph-bar" data-value="0">
+											<span class="graph-legend">文体专业</span>
+									</li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+											<div class="clearfix"></div>
+										</div>
+									</span>
+
+									<span class="graph-barBack">
+										<li id="presentation-5-score" class="graph-bar" data-value="0">
+											<span class="graph-legend">无重复词</span>
+									</li>
+										<div class="graph-bar-grid">
+											<i></i><i></i><i></i><i></i><i></i>
+										</div>
+									</span>
+								</ul>
+							</div>
+						</div>
+
+						<div class="group" data-id="format-score">
+							<div class="header addline">
+								<p class="dashboard-header">格式</p>
+							</div>
+							<div class="barGraph">
+								<ul class="graph">
+									<li id="format-pages-score" class="graph-check" data-value="0">
+										<i class="fa fa-close background-bad"></i> <span
+										class="graph-legend">页面数量</span>
+									</li>
+
+									<li id="format-standards-score" class="graph-check"
+										data-value="0"><i class="fa fa-close background-good"></i>
+										<span class="graph-legend">格式规整</span></li>
+
+									<li id="format-margins-score" class="graph-check"
+										data-value="0"><i class="fa fa-close background-bad"></i>
+										<span class="graph-legend">页面边距</span></li>
+
+									<li id="format-keysections-score" class="graph-check"
+										data-value="0"><i class="fa fa-close background-bad"></i>
+										<span class="graph-legend">核心板块</span></li>
+
+									<li id="format-concise-score" class="graph-check"
+										data-value="0"><i class="fa fa-check background-good"></i>
+										<span class="graph-legend">过度修饰</span></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<!-- Competency -->
+					<div class="competency-wrapper hide" data-id="competency-wrapper">
+						<!-- Competency: analytical -->
+						<div class="group" data-id="competency-analytical">
+							<div class="header addline">
+								<p class="competency-header">
+									<i class="header-icon fa fa-pencil"></i>分析能力
+								</p>
+								<span class="next-icon fa fa-chevron-down"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>分析能力是对或简单或复杂的问题直抵本质的认识并解决问题的能力</li>
+								<li>分析能力包括审辨式思考、全景式思考、发现根本问题、问题结构化、提出解决方案等</li>
+								<li>招聘方认为分析能力是&quot;must have&quot;。对所有的工作，根本上都会涉及认识问题并解决问题</li>
+								<li style="border-width: 0">平均在每份简历中，用户有31处描述涉及或体现分析能力</li>
+							</ul>
+
+							<ul class="items-nav">
+								<p class="summary-text">提升意见</p>
+								<li style="border-width: 0">你是否有如下相关经历？如下经历最能够突显分析能力，使用如下经历展开你的描述：<br />
+									竞争分析、新市场进入、项目规划、市场细分、成本管控、组织与流程优化、市场研究
+							</ul>
+						</div>
+
+						<!-- Competency: leadership -->
+						<div class="group" data-id="competency-leadership">
+							<div class="header addline">
+								<p class="competency-header">
+									<i class="header-icon fa fa-flag"></i>领导能力
+								</p>
+								<span class="next-icon fa fa-chevron-down"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>领导力不仅仅针对他人，领导自己也是领导力的体现</li>
+								<li>做为团队成员，一样可以体现领导力，如提供思路、协助分工、跟踪进展以推进项目执行</li>
+								<li>招聘方认为领导力是被认为与个人长期成功关联度最高的指标之一</li>
+								<li style="border-width: 0">平均在每份简历中，用户有14处描述涉及或体现领导能力</li>
+							</ul>
+
+							<ul class="items-nav">
+								<p class="summary-text">提升意见</p>
+								<li style="border-width: 0">你是否有如下相关经历？如下经历最能够突显领导能力，使用如下经历展开你的描述：<br />
+									项目管理、战略执行、新品上市、带领团队、激励团队成员、获取用户增长
+							</ul>
+						</div>
+
+						<!-- Competency: teamwork -->
+						<div class="group" data-id="competency-teamwork">
+							<div class="header addline">
+								<p class="competency-header">
+									<i class="header-icon fa fa-users"></i>团队能力
+								</p>
+								<span class="next-icon fa fa-chevron-down"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>团队能力即与他人紧密共事并达成共同目标的技能</li>
+								<li>团队能力体现在你对团队的领导、你与他人的配合，更多体现在你对团队的影响</li>
+								<li>招聘方对于个人英雄很谨慎，更乐于寻找能够在组织中与他人一起成长的候选人</li>
+								<li style="border-width: 0">平均在每份简历中，用户有14处描述涉及或体现团队能力</li>
+							</ul>
+
+							<ul class="items-nav">
+								<p class="summary-text">提升意见</p>
+								<li style="border-width: 0">你是否有如下相关经历？如下经历最能够突显团队能力，使用如下经历展开你的描述：<br />
+									招聘、团队协作、辅导团队成员、团队建设、培训、客户管理、带领实习生
+							</ul>
+						</div>
+
+						<!-- Competency: communication -->
+						<div class="group" data-id="competency-communication">
+							<div class="header addline">
+								<p class="competency-header">
+									<i class="header-icon fa fa-handshake-o"></i>沟通能力
+								</p>
+								<span class="next-icon fa fa-chevron-down"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>沟通能力不仅体现在表达，也体现在吸收，即&quot;听懂&quot;。很多时候，&quot;听&quot;反而更重要</li>
+								<li>沟通能力可以体现在口头、书写、谈判、合作等很多方面</li>
+								<li>沟通能力被认为是最可转移的软技能 (most transferrable soft
+									skill)，这项技能在人们变换家庭、学校、职场、行业等背景时均扮演关键角色</li>
+								<li style="border-width: 0">平均在每份简历中，用户有13处描述涉及或体现沟通能力</li>
+							</ul>
+							<ul class="items-nav">
+								<p class="summary-text">提升意见</p>
+								<li style="border-width: 0">你是否有如下相关经历？如下经历最能够突显沟通能力，使用如下经历展开你的描述：<br />
+									谈判、建设战略联盟、头脑风暴、客户关系管理、向管理层做汇报、项目提案
+							</ul>
+						</div>
+
+						<!-- Competency: initiative -->
+						<div class="group" data-id="competency-initiative">
+							<div class="header addline">
+								<p class="competency-header">
+									<i class="header-icon fa fa-hand-o-up"></i>主动性
+								</p>
+								<span class="next-icon fa fa-chevron-down"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>主动性体现在超出传统范畴、探索新问题、提出创新方案等</li>
+								<li>多承担一份责任、热衷折腾点事、好奇心驱动等都是主动性的体现</li>
+								<li>招聘方认为主动性是区分优秀者 (high performers) 与普通者 (average
+									performers) 的最佳指标</li>
+								<li style="border-width: 0">平均在每份简历中，用户有5处描述涉及或体现主动性</li>
+							</ul>
+							<ul class="items-nav">
+								<p class="summary-text">提升意见</p>
+								<li style="border-width: 0">你是否有如下相关经历？如下经历最能够突显主动性，使用如下经历展开你的描述：<br />
+									创新、新品上市、投资决策、团队建设、拓展市场、内部创业
+							</ul>
+						</div>
+					</div>
+
+					<!-- Presentation -->
+					<div class="presentation-wrapper hide"
+						data-id="presentation-wrapper" data-prenum="0"></div>
+
+					<!-- Format -->
+					<div class="format-wrapper hide" data-id="format-wrapper">
+						<!-- Format: Pages -->
+						<div class="group" data-id="format-pages">
+							<div class="format-item addline" data-id="format-pages-header">
+								<span class="icon-img fa fa-files-o background-good"></span> <span
+									class="icon-text">页面数量</span> <span
+									class="next-icon fa fa-chevron-down" style="margin-top: 7px"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>简历的长度是最重要的格式属性</li>
+								<li>我对你的爱有飞流直下三千尺，但我投你的简历却最好只有一页。指导原则就是“相关性”。相关，则体现在简历里；不相关，别写</li>
+								<li>写太多你自认为的闪光点只会让每天看N份简历的招聘方/录取方对你失去兴趣</li>
+								<li style="border-width: 0">一份只有一页纸的简洁的简历，会展现出你的判断、筛选、浓缩、优先、传达能多方面的素质</li>
+							</ul>
+						</div>
+
+						<!-- Format: Standards -->
+						<div class="group" data-id="format-standards">
+							<div class="format-item addline"
+								data-id="format-standards-header">
+								<span class="icon-img fa fa-newspaper-o background-good"></span>
+								<span class="icon-text">格式规整</span> <span
+									class="next-icon fa fa-chevron-down" style="margin-top: 7px"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>确保字体、字号、颜色等方面的统一</li>
+								<li>确保数字均用阿拉伯数字，或者均用three/fifth表示（这种情况少见）</li>
+								<li>涉及货币单位、日期等，仍旧要贯穿全文用一种统一的表达方式</li>
+								<li style="border-width: 0">前后的不一致，在招聘方/录取方眼里是Not
+									detail-oriented的意思</li>
+							</ul>
+						</div>
+
+						<!-- Format: Margins -->
+						<div class="group" data-id="format-margins">
+							<div class="format-item addline" data-id="format-margins-header">
+								<span class="icon-img fa fa-arrows background-good"></span> <span
+									class="icon-text">页面边距</span> <span
+									class="next-icon fa fa-chevron-down" style="margin-top: 7px"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>页面间距对于简历而言，大致相当于身材对于人类而言</li>
+								<li>页面间距对于简历的价值就在于此：让招聘方/录取方可以在压根没看简历内容的时候就形成一种第一印象</li>
+								<li>间距既不能太宽、又不能太窄。太宽会留有大量空白，给招聘方/录取方一种“候选人经历贫瘠”的感觉；太窄则显得逼仄、压抑，以及给人一种
+									over sell的印象</li>
+								<li style="border-width: 0">可以参考Word里的Normal –
+									Moderate页面间距，在这个区间内都是合适的</li>
+							</ul>
+						</div>
+
+						<!-- Format: Key sections -->
+						<div class="group" data-id="format-keysections">
+							<div class="format-item addline"
+								data-id="format-keysections-header">
+								<span class="icon-img fa fa-star background-good"></span> <span
+									class="icon-text">核心板块</span> <span
+									class="next-icon fa fa-chevron-down" style="margin-top: 7px"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li>招聘方/录取方怎么看简历？Education – Professional/Career –
+									Others/Additional，一样分了三段</li>
+								<li>学生党把Education置顶；工作党把Professional/Career置顶</li>
+								<li style="border-width: 0">或许你因为有闪光的经历而在这三部分之外再多出一部分，但是不要比四再多、也不要比三再少了</li>
+							</ul>
+						</div>
+
+						<!-- Format: Concise -->
+						<div class="group" data-id="format-concise">
+							<div class="format-item addline" data-id="format-concise-header">
+								<span class="icon-img fa fa-check-square-o background-good"></span>
+								<span class="icon-text">过度修饰</span> <span
+									class="next-icon fa fa-chevron-down" style="margin-top: 7px"></span>
+							</div>
+
+							<ul class="items-nav">
+								<p class="summary-text">解释</p>
+								<li style="border-width: 0">简历应清晰/简洁，避免过度修饰</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- Services -->
+					<div class="services-wrapper hide" data-id="services-wrapper">
+						<!-- 扫码分享 -->
+						<div class="group" data-id="service-1">
+							<div class="service-item">
+								<div class="icon">
+									<img class="icon" src="@IMAGE/icon/wechat.png"></img>
+								</div>
+								<div class="service-content">
+									<h4>扫码分享，激活神秘服务</h4>
+									<p>分享至朋友圈，跟你的同学们一起激活神秘服务。其实也不神秘，就是下面的2项~~~</p>
+									<img class="tdcode" src="@IMAGE/2DCode.jpg"></img>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+
+						<!-- 下载简历模板 -->
+						<div class="group" data-id="service-2">
+							<div class="service-item">
+								<div class="icon">
+									<img class="icon" src="@IMAGE/icon/resume.png"></img>
+								</div>
+								<div class="service-content">
+									<h4>下载简历模板&nbsp;Free</h4>
+									<p>&quot;老干部表格式简历&quot;和&quot;花里胡哨图文式简历&quot;会显著降低你的求职成功率</p>
+									<p>下载使用HR眼中最专业的简历模板，跟随详尽引导完成简历质量的迅速提升！</p>
+									<div class="form-inline">
+										<label class="control-label">能量密码</label> <input
+											id="download-template-code" class="form-control" type="text"
+											style="width: 50%">
+										<button id="download-template" class="service-btn">下载！</button>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+
+						<!-- 申请导师咨询 -->
+						<div class="group" data-id="service-3">
+							<div class="service-item" style="border: none">
+								<div class="icon">
+									<img class="icon" src="@IMAGE/icon/improve.png"></img>
+								</div>
+								<div class="service-content">
+									<h4>申请导师咨询&nbsp;Free</h4>
+									<p>
+										针对简历，还有我们目前没涵盖的问题吗？<br />针对笔试、面试，或者长期职业规划与发展？<br />
+										你可以尝试与我们沟通，我们作为愿意做你的Buddy或Mentor，祝你一臂之力。
+									</p>
+									<div>
+										<div class="form-group">
+											<label class="control-label" for="service-select-resume"><span
+												class="fa fa-asterisk" style="font-size: 8px"></span>简历</label> <select
+												id="service-select-resume" class="form-control">
+												<!-- <option></option>, Add user resume filenames here  -->
+											</select>
+										</div>
+
+										<div class="form-group">
+											<label class="control-label" for="service-problem">问题</label>
+											<textarea id="service-problem" class="form-control"
+												wrap="spot" style="height: 150px"
+												placeholder="如：我今年XX大学XX系本科毕业，之前投过XX单位，效果不理想。希望可以了解：&nbsp;1、&nbsp;简历上的实习经历是否不足？&nbsp;2、&nbsp;对于课外活动的描述是否没有体现领导力？&nbsp;3、&nbsp;我还会XX和XX能否放在简历上？"></textarea>
+										</div>
+										<div class="form-inline">
+											<label class="control-label">能量密码</label> <input
+												id="download-template-code" class="form-control" type="text"
+												style="width: 50%">
+											<button id="problem-submit" class="service-btn">提交！</button>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="preload-modal" tabindex="-1" role="dialog" aria-labelledby="waiting">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content loader-content">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-12 col-md-8 col-xs-offset-0 col-md-push-2">
+							<p>
+								正在加载页面，请稍等</br>
+							</p>
+							<div class="loader">
+								<img src="@IMAGE/icon/preloader.gif"></img>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="@JS/jquery.min.js"></script>
+	<script type="text/javascript" src="@JS/bootstrap.min.js"></script>
+	<script type="text/javascript" src="@JS/Chart.min.js"></script>
+	<script type="text/javascript" src="@JS/tools.js"></script>
+	<script type="text/javascript" src="@JS/pdfPage.js"></script>
+	<script type="text/javascript" src="@JS/BeAlert.js"></script>
+	<a id="uploadPage" class="hide" href="@ROOT@upload.jsp" target="_blank"></a>
+	<a id="PageTransferLink" class="hide" href=""></a>
+	<p id="SigninState" class="hide">@LEFT_BRACKET@%= session.getAttribute("SigninState") %@RIGHT_BRACKET@</p>
+	<p id="UserEmail" class="hide"></p>
+	<script type="text/javascript">
+	  var viewer = new Viewer();
+	  viewer.find_pages();
+	  var scale = $("#resume-wrapper").width()/612;
+	  viewer.rescale(scale,true);
+	</script>
+</body>
+</html>

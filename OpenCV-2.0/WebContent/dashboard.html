@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+ <head> 
+  <title>简历评测与提升</title> 
+  <meta charset="utf-8"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <link rel="icon" href="images/icon/logo.ico" type="image/x-icon>"> 
+  <link rel="stylesheet" href="css/bootstrap.min.css"> 
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> 
+  <link rel="stylesheet" href="css/main.css"> 
+  <link rel="stylesheet" href="css/normalize.css"> 
+  <link rel="stylesheet" href="css/resume-base.css"> 
+  <link rel="stylesheet" href="css/tools.css"> 
+ </head> 
+ <body> 
+  <header id="header"> 
+   <nav class="navbar navbar-default st-navbar"> 
+    <div class="container"> 
+     <div class="navbar-header logo"> 
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> 
+      <a id="indexPage" href="index.html"> <p style="font-size: 26px; font-weight: 600;">OpenCV</p> <p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p> </a> 
+     </div> 
+     <div id="navbar" class="navbar-collapse collapse"> 
+      <ul class="nav navbar-nav navbar-right"> 
+       <li> <button id="nav-uploadbtn" class="nav-uploadbtn" type="button" style="width: 150px">再次评测</button> </li> 
+       <li><a href="team.html" target="_blank">我们</a></li> 
+       <li class="dropdown"> <a href="#" id="username" class="dropdown-toggle" data-toggle="dropdown">992756037@qq.com&nbsp;<b class="caret"></b></a> 
+        <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1"> 
+         <li class="hide"><a href="#user-center" tabindex="-1" data-toggle="tab"> <i class="fa fa-address-card" aria-hidden="true"></i>用户中心</a> </li> 
+         <li><a href="#signout" tabindex="-1" data-toggle="tab"> <i class="fa fa-sign-out" aria-hidden="true"></i>登出</a> </li> 
+        </ul> </li> 
+      </ul> 
+     </div> 
+    </div> 
+   </nav> 
+  </header> 
+  <div class="container-fluid content-wrapper"> 
+   <div class="row subnav"> 
+    <div class="col-md-4 col-md-offset-8"> 
+     <div class="tabs"> 
+      <label class="tab0" name="dashboard" data-value="0">查看分数</label> 
+      <label class="tab1" name="competency" data-value="1">能力</label> 
+      <label class="tab2" name="presentation" data-value="2">表达</label> 
+      <label class="tab3" name="format" data-value="3">格式</label> 
+      <label class="tab4" name="mystery-services" data-value="4">神秘服务</label> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="row"> 
+    <div class="col-md-8" style="padding-right: 0"> 
+     <!-- Resume lists --> 
+     <div id="uploaded-resumes" class="carousel"> 
+      <div class="carousel-inner"> 
+       <div class="item active"> 
+        <div class="row"> 
+         <div class="col-md-4"> 
+          <div class="thumbnail" data-resumeindex="0"> 
+           <div class="resume-page"> 
+            <img class="resume-thumbnail" src="http://13.59.201.54:8080/OpenCV-beta/user/52/thumbnail/resume-1.png"> 
+           </div> 
+           <div class="resume-status"> 
+            <span class="lang"><b class="lang-type">语言：</b><i class="lang-icon">中文</i></span> 
+            <span class="status"><i class="color-good fa fa-check-circle-o"></i>&nbsp;已生成</span> 
+           </div> 
+           <p class="update-time">更新于：2017-09-22 04:09:26</p> 
+          </div> 
+         </div> 
+         <div class="col-md-4"> 
+          <div class="thumbnail"> 
+           <div class="resume-page" style="background-color: transparent;padding-top: 30px"> 
+            <img class="resume-thumbnail" src="http://13.59.201.54:8080/OpenCV-beta/images/add.png"> 
+           </div> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <!-- 轮播（Carousel）导航 --> 
+      <a class="carousel-control-left" href="#uploaded-resumes" data-slide="prev"><i class="fa fa-angle-left"></i></a> 
+      <a class="carousel-control-right" href="#uploaded-resumes" data-slide="next"><i class="fa fa-angle-right"></i></a> 
+     </div> 
+     <!-- Resume: large thumbnail --> 
+     <div id="uploaded-resumes-large"> 
+      <img class="thumbnail-large" src="http://13.59.201.54:8080/OpenCV-beta/user/52/thumbnail-large/resume-1.png"> 
+     </div> 
+     <p id="DashboardItems" class="hide">[{"resumeId":1,"resumeFilename":"�?��resume-test.pdf","formatRank":[1,1,1,0,0],"resumeScore":48,"presentationRank":[5,5,4,1,5],"competencyRank":[2,4,4,5,3]}]</p> 
+    </div> 
+    <!-- Dashboard, Competency, Presentation, Format and Services --> 
+    <div class="col-md-4"> 
+     <div id="right-panel" class="content"> 
+      <!-- Dashboard --> 
+      <div class="dashboard-wrapper" data-id="dashboard-wrapper"> 
+       <!-- Hints for Users --> 
+       <div id="dashboard-summary" class="background-info">
+         很抱歉，您的简历多我们来说有点困难。暂时无法分析、处理。您可以申请我们的人工服务！ 
+        <!-- 你的简历处于Top50%，求职成功率一般，还要继续改进！--> 
+       </div> 
+       <!-- Total scores --> 
+       <div class="group" style="border-bottom: 1px solid #d0d0d0;"> 
+        <canvas id="dashboard-score" height="160"></canvas> 
+       </div> 
+       <div class="group" data-id="competency-score"> 
+        <div class="header addline"> 
+         <p class="dashboard-header">能力</p> 
+        </div> 
+        <div class="barGraph"> 
+         <ul class="graph"> 
+          <span class="graph-barBack"> <li id="competency-analytical-score" class="graph-bar" data-value="0"> <span class="graph-legend">分析</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="competency-leadership-score" class="graph-bar" data-value="0"> <span class="graph-legend">领导</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="competency-teamwork-score" class="graph-bar" data-value="0"> <span class="graph-legend">团队</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="competency-communication-score" class="graph-bar" data-value="0"> <span class="graph-legend">沟通</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="competency-initiative-score" class="graph-bar" data-value="0"> <span class="graph-legend">主动</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+         </ul> 
+        </div> 
+       </div> 
+       <div class="group" data-id="presentation-score"> 
+        <div class="header addline"> 
+         <p class="dashboard-header">表达</p> 
+        </div> 
+        <div class="barGraph"> 
+         <ul class="graph"> 
+          <span class="graph-barBack"> <li id="presentation-1-score" class="graph-bar" data-value="0"> <span class="graph-legend">动词引导</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="presentation-2-score" class="graph-bar" data-value="0"> <span class="graph-legend">数字量化</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="presentation-3-score" class="graph-bar" data-value="0"> <span class="graph-legend">句子长度</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="presentation-4-score" class="graph-bar" data-value="0"> <span class="graph-legend">文体专业</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+            <div class="clearfix"></div> 
+           </div> </span> 
+          <span class="graph-barBack"> <li id="presentation-5-score" class="graph-bar" data-value="0"> <span class="graph-legend">无重复词</span> </li> 
+           <div class="graph-bar-grid"> 
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i> 
+           </div> </span> 
+         </ul> 
+        </div> 
+       </div> 
+       <div class="group" data-id="format-score"> 
+        <div class="header addline"> 
+         <p class="dashboard-header">格式</p> 
+        </div> 
+        <div class="barGraph"> 
+         <ul class="graph"> 
+          <li id="format-pages-score" class="graph-check" data-value="0"> <i class="fa fa-close background-bad"></i> <span class="graph-legend">页面数量</span> </li> 
+          <li id="format-standards-score" class="graph-check" data-value="0"> <i class="fa fa-close background-good"></i> <span class="graph-legend">格式规整</span> </li> 
+          <li id="format-margins-score" class="graph-check" data-value="0"> <i class="fa fa-close background-bad"></i> <span class="graph-legend">页面边距</span> </li> 
+          <li id="format-keysections-score" class="graph-check" data-value="0"> <i class="fa fa-close background-bad"></i> <span class="graph-legend">核心板块</span> </li> 
+          <li id="format-concise-score" class="graph-check" data-value="0"> <i class="fa fa-check background-good"></i> <span class="graph-legend">过度修饰</span> </li> 
+         </ul> 
+        </div> 
+       </div> 
+      </div> 
+      <!-- Competency --> 
+      <div class="competency-wrapper hide" data-id="competency-wrapper"> 
+       <!-- Competency: analytical --> 
+       <div class="group" data-id="competency-analytical"> 
+       </div> 
+       <!-- Competency: leadership --> 
+       <div class="group" data-id="competency-leadership"> 
+       </div> 
+       <!-- Competency: teamwork --> 
+       <div class="group" data-id="competency-teamwork"> 
+       </div> 
+       <!-- Competency: communication --> 
+       <div class="group" data-id="competency-communication"> 
+       </div> 
+       <!-- Competency: initiative --> 
+       <div class="group" data-id="competency-initiative"> 
+       </div> 
+      </div> 
+      <!-- Presentation --> 
+      <div class="presentation-wrapper hide" data-id="presentation-wrapper"> 
+       <div class="group" data-id="presentation-label-1"> 
+       </div> 
+      </div> 
+      <!-- Format --> 
+      <div class="format-wrapper hide" data-id="format-wrapper"> 
+       <!-- Format: Pages --> 
+       <div class="group" data-id="format-pages"> 
+       </div> 
+       <!-- Format: Standards --> 
+       <div class="group" data-id="format-standards"> 
+       </div> 
+       <!-- Format: Margins --> 
+       <div class="group" data-id="format-margins"> 
+       </div> 
+       <!-- Format: Key sections --> 
+       <div class="group" data-id="format-key-sections"> 
+       </div> 
+       <!-- Format: Concise --> 
+       <div class="group" data-id="format-concise"> 
+       </div> 
+      </div> 
+      <!-- Services --> 
+      <div class="services-wrapper hide" data-id="services-wrapper"> 
+       <!-- 扫码分享 --> 
+       <div class="group" data-id="service-1"> 
+        <div class="service-item"> 
+         <div class="icon"> 
+          <img class="icon" src="http://13.59.201.54:8080/OpenCV-beta/images/icon/wechat.png"> 
+         </div> 
+         <div class="service-content"> 
+          <h4>扫码分享，激活神秘服务</h4> 
+          <p>分享至朋友圈，跟你的同学们一起激活神秘服务。其实也不神秘，就是下面的2项~~~</p> 
+          <img class="tdcode" src="http://13.59.201.54:8080/OpenCV-beta/images/2DCode.jpg"> 
+         </div> 
+         <div class="clearfix"></div> 
+        </div> 
+       </div> 
+       <!-- 下载简历模板 --> 
+       <div class="group" data-id="service-2"> 
+        <div class="service-item"> 
+         <div class="icon"> 
+          <img class="icon" src="http://13.59.201.54:8080/OpenCV-beta/images/icon/resume.png"> 
+         </div> 
+         <div class="service-content"> 
+          <h4>下载简历模板&nbsp;Free</h4> 
+          <p>"老干部表格式简历"和"花里胡哨图文式简历"会显著降低你的求职成功率</p> 
+          <p>下载使用HR眼中最专业的简历模板，跟随详尽引导完成简历质量的迅速提升！</p> 
+          <div class="form-inline"> 
+           <label class="control-label">能量密码</label> 
+           <input id="download-template-code" class="form-control" type="text" style="width: 50%"> 
+           <button id="download-template" class="service-btn">下载！</button> 
+          </div> 
+         </div> 
+         <div class="clearfix"></div> 
+        </div> 
+       </div> 
+       <!-- 申请导师咨询 --> 
+       <div class="group" data-id="service-3"> 
+        <div class="service-item" style="border: none"> 
+         <div class="icon"> 
+          <img class="icon" src="http://13.59.201.54:8080/OpenCV-beta/images/icon/improve.png"> 
+         </div> 
+         <div class="service-content"> 
+          <h4>申请导师咨询&nbsp;Free</h4> 
+          <p> 针对简历，还有我们目前没涵盖的问题吗？<br>针对笔试、面试，或者长期职业规划与发展？<br> 你可以尝试与我们沟通，我们作为愿意做你的Buddy或Mentor，祝你一臂之力。 </p> 
+          <div> 
+           <div class="form-group"> 
+            <label class="control-label" for="service-select-resume"><span class="fa fa-asterisk" style="font-size: 8px"></span>简历</label> 
+            <select id="service-select-resume" class="form-control"> 
+             <!-- <option></option>, Add user resume filenames here  --> </select> 
+           </div> 
+           <div class="form-group"> 
+            <label class="control-label" for="service-problem">问题</label> 
+            <textarea id="service-problem" class="form-control" wrap="spot" style="height: 150px" placeholder="如：我今年XX大学XX系本科毕业，之前投过XX单位，效果不理想。希望可以了解：&nbsp;1、&nbsp;简历上的实习经历是否不足？&nbsp;2、&nbsp;对于课外活动的描述是否没有体现领导力？&nbsp;3、&nbsp;我还会XX和XX能否放在简历上？"></textarea> 
+           </div> 
+           <div class="form-inline"> 
+            <label class="control-label">能量密码</label> 
+            <input id="download-template-code" class="form-control" type="text" style="width: 50%"> 
+            <button id="problem-submit" class="service-btn">提交！</button> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="clearfix"></div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+    <div class="clearfix"></div> 
+   </div> 
+  </div> 
+  <script type="text/javascript" src="js/jquery.min.js"></script> 
+  <script type="text/javascript" src="js/bootstrap.min.js"></script> 
+  <script type="text/javascript" src="js/Chart.min.js"></script> 
+  <script type="text/javascript" src="js/tools.js"></script> 
+  <script type="text/javascript" src="js/pdfPage.js"></script> 
+  <p id="SigninState" class="hide"><%= session.getAttribute("SigninState") %></p> 
+  <p id="UserEmail" class="hide">992756037@qq.com</p>  
+ </body>
+</html>

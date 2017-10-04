@@ -1,0 +1,339 @@
+/* IMPORT SECTION */
+@import
+	url("http://fonts.googleapis.com/css?family=Raleway:200,300,600,700&subset=latin,latin-ext")
+	;
+
+@import
+	url('https://fonts.googleapis.com/css?family=Open+Sans|Work+Sans:400,500,600,700')
+	;
+
+/* Basic styles */
+body {
+	height: 100%;
+	color: #000;
+	font-family: "Raleway", Helvetica, Arial, sans-serif;
+	background-color: #fff;
+}
+
+a {
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-ms-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+}
+
+a, a:hover, a:active, a:focus, button:focus {
+	outline: 0;
+	border: 0;
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Raleway', sans-serif;
+	font-weight: 700;
+}
+
+input, textarea {
+	outline: none;
+}
+
+label {
+	font-weight: 300;
+}
+
+.overlay {
+	background-color: #000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.8;
+}
+
+.page-content>.row {
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+	margin-top: 30px;
+}
+
+.validation-error-class {
+	margin: 0;
+	padding: 0 0 10px 5px;
+	color: #b21333;
+	font-size: 12px;
+	text-align: left;
+}
+
+/* HEADER */
+#header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	width: 100%;
+	min-height: 80px;
+}
+
+#header .st-navbar {
+	min-height: 80px;
+	font-size: 18px;
+	margin-bottom: 0;
+	border-radius: 0;
+	background-color: #fff;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+#header .logo {
+	padding-left: 12px;
+}
+
+#header .logo button {
+	margin-top: 25px;
+	background-color: #fff;
+	border-width: 0;
+}
+
+#header .logo a p {
+	font-size: 16px;
+	font-weight: 500;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	width: 200px;
+}
+
+.st-navbar ul {
+	margin-top: 15px;
+}
+
+.st-navbar li a {
+	display: inline-block;
+	padding: 0;
+	margin: 14px;
+	color: #000;
+	font-size: 18px;
+	font-weight: 550;
+	text-transform: uppercase;
+}
+
+.st-navbar li a:hover, a:visited, a:focus {
+	color: #000;
+	background-color: transparent;
+}
+
+.st-navbar .navbar-header {
+	margin-top: 5px;
+}
+
+.st-navbar .navbar-header p {
+	color: #000;
+}
+
+.st-navbar .navbar-toggle {
+	margin-top: 7px;
+	margin-right: 25px;
+	padding: 0;
+	border-radius: 0;
+	background-color: #fff;
+}
+
+.st-navbar .navbar-toggle:hover {
+	background-color: #fff;
+}
+
+.st-navbar .navbar-toggle>.icon-bar {
+	background-color: #ddd;
+}
+
+.st-navbar .navbar-toggle:hover>.icon-bar {
+	background-color: #000;
+}
+
+/** Login & Signup **/
+.login-wrapper {
+	position: absolute;
+	top: 80px;
+	left: 0;
+	right: 0;
+	text-align: center;
+}
+
+.login-wrapper .box {
+	float: none;
+	margin: 0 auto;
+	padding: 30px 0 30px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 1px 3px, rgba(0, 0, 0, 0.35) 0
+		0 1px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.4) 0 1px 3px, rgba(0, 0, 0, 0.35) 0 0
+		1px;
+	-ms-box-shadow: rgba(0, 0, 0, 0.4) 0 1px 3px, rgba(0, 0, 0, 0.35) 0 0
+		1px;
+	-o-box-shadow: rgba(0, 0, 0, 0.4) 0 1px 3px, rgba(0, 0, 0, 0.35) 0 0 1px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0 1px 3px, rgba(0, 0, 0, 0.35) 0 0 1px;
+	background: #fff;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	-ms-border-radius: 6px;
+	-o-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.login-wrapper .box .content-wrap {
+	width: 82%;
+	margin: 0 auto;
+}
+
+.login-wrapper .box .content-wrap a {
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding-top: 5px;
+	padding-left: 12px;
+	color: #337ab7;
+	font-weight: 500;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: left;
+}
+
+.login-wrapper .box .content-wrap a:hover, a:visited {
+	color: #23527c;
+	text-decoration: underline;
+}
+
+.login-wrapper .box h6 {
+	margin-bottom: 35px;
+	/*text-transform: uppercase;*/
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.login-wrapper .box p {
+	margin-top: -15px;
+	margin-bottom: 25px;
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.login-wrapper .box input[type="text"], .login-wrapper .box input[type="password"]
+	{
+	height: 40px;
+	margin-bottom: 10px;
+	border-color: #b2bfc7;
+	padding-left: 12px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.login-wrapper .box input[type="text"]:focus, .login-wrapper .box input[type="password"]:focus
+	{
+	border: 1px solid #28a0e5;
+	outline: none;
+	-webkit-box-shadow: inset 0 1px 2px #ddd, 0px 0 5px #28a0e5;
+	-moz-box-shadow: inset 0 1px 2px #ddd, 0px 0 5px #28a0e5;
+	-ms-box-shadow: inset 0 1px 2px #ddd, 0px 0 5px #28a0e5;
+	-o-box-shadow: inset 0 1px 2px #ddd, 0px 0 5px #28a0e5;
+	box-shadow: inset 0 1px 2px #dddddd, 0px 0 5px #28a0e5;
+}
+
+.login-wrapper .box input[type="password"] {
+	margin-bottom: 10px;
+}
+
+.login-wrapper .box .action {
+	position: relative;
+	top: 10px;
+	padding: 15px 0px;
+}
+
+.login-wrapper .box .signup {
+	padding: 7px 25px;
+	text-align: center;
+	font-size: 15px;
+	font-weight: 500;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	color: #000;
+}
+
+.login-wrapper .box .signup:focus {
+	border: 1px solid #adadad;
+	outline: none;
+	background-color: rgb(212, 212, 212);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-ms-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
+}
+
+.login-wrapper .already {
+	float: none;
+	margin: 0 auto;
+	margin-top: 30px;
+	text-align: center;
+	font-size: 14px;
+}
+
+.login-wrapper .already p {
+	display: inline-block;
+	color: #222;
+}
+
+.login-wrapper .already a {
+	margin-left: 2px;
+	border-bottom: 1px solid;
+	color: #222;
+}
+
+.login-wrapper .already a:hover {
+	text-decoration: none;
+	color: #000;
+	border-bottom-color: #000;
+}
+
+/* Mobile phones */
+@media ( max-width : 480px) {
+}
+
+/* Tablets */
+@media ( max-width : 767px) {
+	.container {
+		width: 100%;
+	}
+	.header {
+		height: auto;
+		padding: 15px 0px;
+	}
+	.header .logo {
+		text-align: center;
+		padding-bottom: 10px;
+	}
+}
+
+@media ( max-width : 991px) {
+	.header {
+		height: auto;
+		padding: 15px 0px;
+	}
+	.header .logo {
+		text-align: center;
+		padding-bottom: 10px;
+	}
+	.header .form {
+		margin: 10px auto;
+	}
+	.mainy {
+		margin-left: 0px;
+	}
+}
