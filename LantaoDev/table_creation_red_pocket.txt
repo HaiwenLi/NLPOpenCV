@@ -1,0 +1,11 @@
+CREATE TABLE userpoint(
+    userid int(11) PRIMARY KEY NOT NULL UNIQUE,
+	point int(11) NOT NULL	
+)
+
+CREATE TABLE userpoint_usage(
+    id int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+	mailbox varchar(64) UNIQUE NOT NULL,
+	point int(11) NOT NULL,
+	usage_date varchar(32) NOT NULL
+)
