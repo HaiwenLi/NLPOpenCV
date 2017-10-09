@@ -217,6 +217,46 @@ ul.dropdown-menu li a i {
 	background-color: rgb(242, 222, 222);
 }
 
+.bell-curve-labels {
+	margin-top: -7px;
+	margin-left: 10px;
+	height: 10px;
+	line-height: 10px;
+}
+
+.pull-left {
+	float: left !important;
+}
+
+.bell-curve-interval {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	border-left: 1px solid #696969;
+	font-size: 10px;
+	text-align: center;
+}
+
+.bell-curve-interval:last-child {
+	border-right: 1px solid #696969;
+}
+
+.bell-curve-interval:before {
+	position: absolute;
+	content: "\02190";
+	left: -1px;
+	top: 1px;
+	color: #696969;
+}
+
+.bell-curve-interval:after {
+	position: absolute;
+	content: "\02192";
+	right: -1px;
+	top: 1px;
+	color: #696969;
+}
+
 /* Dashboard: Score */
 .dashboard-wrapper #dashboard-summary {
 	margin: 0 20px;
@@ -229,6 +269,7 @@ ul.dropdown-menu li a i {
 
 .dashboard-wrapper .dashboard-header {
 	height: 27px;
+	line-height: 27px;
 	width: 80px;
 	margin-bottom: 0;
 	background-color: #f5f5f5;
@@ -290,6 +331,12 @@ ul.dropdown-menu li a i {
 	border-radius: 20px;
 }
 
+.graph .graph-check i:hover {
+	-moz-box-shadow: 0 0 5px #969696; /*firefox*/
+	-webkit-box-shadow: 0 0 5px #969696; /*webkit*/
+	box-shadow: 0 0 5px #969696; /*opera或ie9*/
+}
+
 .graph .graph-bar {
 	background-color: #59bac0;
 	-webkit-transition: all 1s ease-out;
@@ -303,15 +350,13 @@ ul.dropdown-menu li a i {
 	height: 20px;
 	width: 0%;
 }
-
-.graph .graph-bar:hover {
+/*graph .graph-bar:hover {
 	-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
 	transition: all 0.5s ease;
 	background: #428D92;
-}
-
+}*/
 .graph .graph-bar:last-child {
 	margin-bottom: 0;
 }
@@ -640,6 +685,6 @@ ul.dropdown-menu li a i {
 }
 
 /* Resume content */
-#resume-wrapper{
+#resume-wrapper {
 	overflow: hidden;
 }

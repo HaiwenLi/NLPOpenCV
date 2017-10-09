@@ -3,7 +3,7 @@
 */
 var Gaussian_Data_X = [];
 var Gaussian_Data_Y = [];
-var Sample_Points_Num = 20;
+var Sample_Points_Num = 27;
 
 // States
 var LastTab = "";
@@ -27,12 +27,20 @@ var COMPETENCY = ['analytical','leadership','teamwork','communication','initiati
 var FORMAT_GROUPS = ['format-pages','format-standards','format-margins',
 'format-keysections','format-concise'];
 var SERVICES_GROUPS = ['service-1','service-2','service-3'];
-var HIGHLIGHT_COLOR = "#3290fe";
+var HIGHLIGHT_COLOR = "#a4caf8";//"#3290fe";
 var DEFAULT_HINTTEXT = "很抱歉，您的简历多我们来说有点困难。暂时无法分析和处理。您可以申请我们的人工服务！";
 
 $(document).ready(function() {
   Current_Resume_Index = 0;
   $('#uploaded-resumes').carousel('pause');
+
+  // Add animation for competency and presentation scores in dashboard page
+  $("div.graph-bar-grid").on("mouseover",function(){
+     $(this).siblings("li").css("background-color","#428D92");
+  });
+  $("div.graph-bar-grid").on("mouseout",function(){
+    $(this).siblings("li").css("background-color","#59bac0");
+  });
 
   // Add event listener for elements
   $("div.tabs").children().on("click", switchToggle);
@@ -42,8 +50,14 @@ $(document).ready(function() {
 
   $("#preload-modal").modal("hide");
   if (CurrentTab == "dashboard"){
-    DashboardItems = JSON.parse($("#DashboardItems").html());
-    showDashboard(DashboardItems[0]);
+    var strDashboard = $("#DashboardItems").html();
+    if (strDashboard.length < 10){
+      DashboardItems = [];
+      drawFinalScore(0);
+    } else{
+      DashboardItems = JSON.parse($("#DashboardItems").html());
+      showDashboard(DashboardItems[0]);
+    }
   }
   else if (CurrentTab == "benchmark"){
     var tabValue = parseInt(getUrlParam("tabvalue"));
@@ -81,10 +95,12 @@ function drawFinalScore(score){
   // Color
   var blue = "rgb(54,162,235)";
   var red = "rgb(255,99,132)";
+  var score_point_color = red;
 
   var score_x = 8*(score/100 - 0.5);// Map to [-4,4]
   var final_score_y = [];
-  var x_index = Math.floor(score_x/(Gaussian_Data_X[1]-Gaussian_Data_X[0]))+Sample_Points_Num/2;
+  var tooltip_score_y = [];
+  var x_index = Math.floor(score_x/(Gaussian_Data_X[1]-Gaussian_Data_X[0])+Sample_Points_Num/2);
   x_index = Math.min(x_index, Sample_Points_Num);
   x_index = Math.max(x_index, 0);
 
@@ -97,7 +113,18 @@ function drawFinalScore(score){
     else{
        final_score_y.push(NaN);
     }
+
+    // set tooltip score y
+    if (i == x_index){
+      tooltip_score_y.push(Gaussian_Data_Y[i]);
+    } else{  tooltip_score_y.push(NaN); }
   }
+
+  // set tooltip callback
+  var tooltip_callback = {
+    title: function(tooltipItems, data){ return ""; },
+    label: function(tooltipItems, data){ return ("你的分数：" + score.toString()); },
+  };
 
   var ctx = document.getElementById("dashboard-score").getContext('2d');
   var myChart = new Chart(ctx, {
@@ -123,33 +150,40 @@ function drawFinalScore(score){
           fill: true,
           lineTesion: 0,
         },
+        {
+          label: "",
+          backgroundColor: score_point_color,
+          borderColor: score_point_color,
+          pointRadius: 4,
+          pointHitRadius: 6,
+          borderWidth: 2,
+          data: tooltip_score_y,
+          fill: false,
+          lineTesion: 0,
+        },
       ]
     },
     options: {
-      title: {
-        display: false
-      },
-      legend: {
-        display: false
-      },
+      title:  { display: false },
+      legend: { display: false },
       scales: {
         xAxes: [{
-          display: false,
-          ticks: {
-            min: -4,
-            max: 4,
-          }
+          display: true,
+          ticks: { min: -4, max: 4, display: false, },
+          gridLines:{ display: false, }
         }],
         yAxes: [{
-          display: false,
-          ticks:{
-            min: -0.002,
-            max: 1.01,
-          }
+          display: true,
+          ticks:{ min: -0.002, max: 1.01, display: false, },
+          gridLines:{ display: false, },
+          scaleLabel:{ display:false, }
         }]
       },
-      animation: {
-        duration: 3000,
+      animation: { duration: 2000, },
+      tooltips: {
+        position: "nearest",
+        displayColors: false,
+        callbacks: tooltip_callback,
       },
       responsiveAnimationDuration: 0, // animation duration after a resize
     }
@@ -671,11 +705,11 @@ function showDashboard(dashboard_item){
   var comment_text = "";
   if (resume_score>100){ resume_score = 100; }
   if (resume_score>=0 && resume_score<=25){
-    comment_text = "表现落后 。要加油努力！";
-  } else if (resume_score>=26 && resume_score<=50){
+    comment_text = "表现落后。要加油努力！";
+  } else if (resume_score>=25 && resume_score<=50){
      comment_text = "表现一般。要加油努力！";
   } else if (resume_score>=51 && resume_score<=75){
-     comment_text = "处于中上游水平 。还可以继续提升！";
+     comment_text = "处于中上游水平。还可以继续提升！";
   } else if (resume_score>=76 && resume_score<=100){
      comment_text = "处于上游水平。祝你一举拿下好Offer！";
   }
@@ -691,24 +725,25 @@ function showDashboard(dashboard_item){
  Select Dashboard Result
 **********************************************/
 function selectDashboardItem(){
-  // get the dashboard id
-  var dashboard_index = parseInt($(this).data("resumeindex"));
-  var dashboard_item = DashboardItems[dashboard_index];
+	if (DashboardItems.length > 0){
+    // get the dashboard id
+    var dashboard_index = parseInt($(this).data("resumeindex"));
+    var dashboard_item = DashboardItems[dashboard_index];
 
-  // show large thumbnail
-  for (var i=0; i<DashboardItems.length; ++i){
-    if (i == dashboard_index){
-      $("#uploaded-resumes-large").find("img").eq(i).removeClass("hide");
+    // show large thumbnail
+    for (var i=0; i<DashboardItems.length; ++i){
+      if (i == dashboard_index){
+        $("#uploaded-resumes-large").find("img").eq(i).removeClass("hide");
+      }
+      else{
+        $("#uploaded-resumes-large").find("img").eq(i).addClass("hide");
+      }
     }
-    else{
-      $("#uploaded-resumes-large").find("img").eq(i).addClass("hide");
-    }
-  }
-  // update cuurent resume index
-  Current_Resume_Index = dashboard_index;
-
-  // show dashboard result
-  showDashboard(dashboard_item);
+    // update current resume index
+    Current_Resume_Index = dashboard_index;
+    // show dashboard result
+    showDashboard(dashboard_item);
+	}
 }
 
 //----------------------------------------------

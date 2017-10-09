@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-CN">
 <head>
-<title>OpenCV 简历评测与提升</title>
+<title>简历评测与提升</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +59,7 @@
 					class="icon-bar"></span>
 			</button>
 			<a id="indexPage" href="index.jsp">
-				<p style="font-size: 26px; font-weight: 600;">OpenCV</p>
+				<p style="font-size: 26px; font-weight: 600;">简历帮</p>
 				<p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p>
 			</a>
 		</div>
@@ -77,7 +77,7 @@
 							<p id="user-email-errorbar" class="validation-error-class hide">更新密码链接无效，请重新申请找回密码</p>
 							<input id="reset-passwd" class="form-control" type="password"
 								placeholder="请输入新密码">
-							<p id="reset-passwd-errorbar" class="validation-error-class hide">密码为至少8位的英文字母、数字或符号（点、下划线）</p>
+							<p id="reset-passwd-errorbar" class="validation-error-class hide">密码为8-20位的英文字母、数字或符号（点、下划线）</p>
 							<input id="reset-passwd-confirm" class="form-control"
 								type="password" placeholder="请再输入一遍新密码">
 							<p id="reset-passwd-confirm-errorbar"

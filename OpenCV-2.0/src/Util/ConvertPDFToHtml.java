@@ -1,10 +1,10 @@
 package Util;
 
 /*
- * ConvertPDFToHtml class: ²ÉÓÃ¿ªÔ´ÏîÄ¿ PDF2HTMLEX½«PDF¼òÀú×ª»¯ÎªHTMLÒ³Ãæ
+ * ConvertPDFToHtml class: é‡‡ç”¨å¼€æºé¡¹ç›® PDF2HTMLEXå°†PDFç®€å†è½¬åŒ–ä¸ºHTMLé¡µé¢
  */
 public class ConvertPDFToHtml {
-    public static String PDF2HTMLEX_PATH = "E:\\pdf2htmlEX\\pdf2htmlEX";//"pdf2htmlEX";
+    public static String PDF2HTMLEX_PATH = "pdf2htmlEX";//"E:\\pdf2htmlEX\\pdf2htmlEX";
     
 	// Convert PDF file into HTML page
 	public static boolean PDF2HtmlEx(String pdfFilename, String dest_dir, String htmlFilename){
@@ -26,6 +26,7 @@ public class ConvertPDFToHtml {
 			
 			process.waitFor();
 			process.destroy();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import Dao.userDao;
 import Util.MD5Util;
 import Util.MailUtil;
+import Util.PathManager;
 
 /**
  * Servlet implementation class SendResetPasswordEmailServlet
@@ -31,8 +32,8 @@ public class SendResetPasswordEmailServlet extends HttpServlet {
     }
     
     public String CreateLink(String email){
-    	String secretKey = UUID.randomUUID().toString();                  //Éú³ÉÃÜÔ¿
-    	Date outDate = new Date(System.currentTimeMillis() + 30*60*1000); //30·ÖÖÓºó¹ıÆÚ  
+    	String secretKey = UUID.randomUUID().toString();                  //ç”Ÿæˆå¯†é’¥
+    	Date outDate = new Date(System.currentTimeMillis() + 30*60*1000); //30åˆ†é’Ÿåè¿‡æœŸ  
     	long date = outDate.getTime() / 1000 * 1000;
     	String key = date + "$" + secretKey;
     	String digitalSignature = MD5Util.MD5(key);
@@ -66,17 +67,17 @@ public class SendResetPasswordEmailServlet extends HttpServlet {
 		// Send Email to user email box
 		String from = "no-reply@opencv.expert";
 	    String to = email;
-	    String subject = "ÖØÖÃÃÜÂëĞÅÏ¢";
+	    String subject = "é‡ç½®å¯†ç ä¿¡æ¯";
 	    
 	    String body = "<div style=\"width: 650px; margin: 0 auto; padding: 40px 20px; background-color: #f5f5f5; color: #000; text-align: center; font-size: 16px\">" +
-	    "<h3 style=\"font-size: 25px; line-height: 27px; text-align: center;\">" +
-	    "È«¹úµÚÒ»¿î</br>ÈË¹¤ÖÇÄÜ ¡°²â¼òÀú¡¢¸Ä¼òÀú¡± ¹¤¾ß" + 
+	    "<h3 style=\"font-size: 20px; line-height: 20px; text-align: center;\">" +
+	    "å…¨å›½ç¬¬ä¸€æ¬¾</br>äººå·¥æ™ºèƒ½ â€œæµ‹ç®€å†ã€æ”¹ç®€å†â€ å·¥å…·" + 
 	    "</h3>" +
-	    "<p>" + to + "£¬ÄãºÃ£¡<br/>ÄúµÄĞŞ¸ÄÃÜÂëÇëÇóÒÑ±»½ÓÊÜ£¬Èç¹ûÄúÃ»ÓĞ·¢ËÍÕâ¸öÇëÇó£¬ÇëºöÂÔÕâ¸öÓÊ¼ş¡£" + 
+	    "<p>" + to + "ï¼Œä½ å¥½ï¼<br/>æ‚¨çš„ä¿®æ”¹å¯†ç è¯·æ±‚å·²è¢«æ¥å—ï¼Œå¦‚æœæ‚¨æ²¡æœ‰å‘é€è¿™ä¸ªè¯·æ±‚ï¼Œè¯·å¿½ç•¥è¿™ä¸ªé‚®ä»¶ã€‚" + 
 	    "</p>"+
-	    "<p style=\"margin-bottom: 25px;\">±¾ÓÊ¼ş³¬¹ı30·ÖÖÓ£¬Á´½Ó½«»áÊ§Ğ§£¬Èç¹ûÄúĞèÒªĞŞ¸ÄÃÜÂë£¬Çëµã»÷ÏÂÃæµÄÁ´½Ó£º" +
+	    "<p style=\"margin-bottom: 25px;\">æœ¬é‚®ä»¶è¶…è¿‡30åˆ†é’Ÿï¼Œé“¾æ¥å°†ä¼šå¤±æ•ˆï¼Œå¦‚æœæ‚¨éœ€è¦ä¿®æ”¹å¯†ç ï¼Œè¯·ç‚¹å‡»ä¸‹é¢çš„é“¾æ¥ï¼š" +
 	    "</p>" +
-	    "<p>" + "http://opencv.expert/reset-password.jsp?useremail=" + email + "&key=" + CreateLink(email) + "</p>" +
+	    "<p>" + PathManager.WebsitePath + "reset-password.jsp?useremail=" + email + "&key=" + CreateLink(email) + "</p>" +
 	    "</div>";
 	    
 	    // Send HTML message

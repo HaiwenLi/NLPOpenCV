@@ -19,11 +19,11 @@ import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 
 /*
- * ConvertPDFToPng class: ½«PDF¼òÀú×ª»¯ÎªPNGÍ¼Ïñ(ËõÂÔÍ¼)£¬ÓÃÓÚÔÚDashboardÒ³ÃæÏÔÊ¾ÓÃ»§ÒÑ¾­ÉÏ´«µÄ¼òÀúÎÄ¼ş
+ * ConvertPDFToPng class: å°†PDFç®€å†è½¬åŒ–ä¸ºPNGå›¾åƒ(ç¼©ç•¥å›¾)ï¼Œç”¨äºåœ¨Dashboardé¡µé¢æ˜¾ç¤ºç”¨æˆ·å·²ç»ä¸Šä¼ çš„ç®€å†æ–‡ä»¶
  */
 
 public class ConvertPDFToPng {
-	// pdfFilenameÎªPDFÎÄ¼şÂ·¾¶ £¬resolutionÎª²»Í¬·Ö±æÂÊ
+	// å°†PDFæ–‡ä»¶é¦–é¡µè½¬åŒ–ä¸ºPNGå›¾åƒ
 	public boolean ConvertPDFToImage(String pdfFilename, int resolution){
 		if (!pdfFilename.endsWith(".pdf") && !pdfFilename.endsWith(".PDF")){
 			return false;
@@ -49,7 +49,7 @@ public class ConvertPDFToPng {
                 String getFilename = file.getAbsolutePath(); // file.getName();
                 String filename = getFilename.substring(0, getFilename.lastIndexOf("."));
                 
-                // ±£´æPNG
+                // ç”ŸæˆPNGæ–‡ä»¶
                 FileOutputStream out = new FileOutputStream(filename + "-Page0.png");
                 ImageIO.write(tag, "png", out);
                 out.close();				
@@ -65,13 +65,12 @@ public class ConvertPDFToPng {
 		return false;
 	}
 	
-	// Éú³ÉPNGËõÔ¼Í¼
+	// ç”Ÿæˆç¼©ç•¥å›¾
 	public void Thumb(String pngFilename, String outputFilename, double scale) throws IOException {
 		String [] inputFilename = {pngFilename};
 		Thumbnails.of(inputFilename).scale(scale).scalingMode(ScalingMode.BICUBIC).toFile(outputFilename);    
 	}
 	
-	// ¶ÔPDFÎÄ¼şÊ×Ò³Éú³ÉËõÂÔÍ¼
 	public boolean GenerateThumbnails(String pdfFilename,String thumbnail_filename, int type){
 		// Check whether the PNG file has been created
 		String pngFilename = pdfFilename.substring(0, pdfFilename.lastIndexOf(".")) + "-Page0.png";

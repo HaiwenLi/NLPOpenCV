@@ -22,10 +22,11 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 /*
- * PageGenerator£º¸ù¾İDashboard & BenchmarkÄ£°å£¬Õë¶ÔÃ¿Ò»·İ¼òÀú²úÉúJSPÎÄ¼ş
+ * PageGeneratorï¼šæ ¹æ®Dashboard & Benchmarkæ¨¡æ¿ï¼Œé’ˆå¯¹æ¯ä¸€ä»½ç®€å†äº§ç”ŸJSPæ–‡ä»¶
  */
 public class PageGenerator {
     public static double SIMILARITY_THRESHOLD = 0.75;
+    public static int MAX_USERNAME_LENGTH = 32;
     
 	/* Presentation samples used in creating presentation benchmark page */
 	private List<String> goodPresentationSamples;
@@ -40,7 +41,7 @@ public class PageGenerator {
 	private String UserEmail;
 
 	/* Path information */
-	private String BenchmarkFolder;       // benchmarkÔÚ·şÎñÆ÷ÖĞµÄÕæÊµÂ·¾¶
+	private String BenchmarkFolder;       // benchmarkåœ¨æœåŠ¡å™¨ä¸­çš„çœŸå®è·¯å¾„
 	
 	public PageGenerator(){
 	    PageNum = -1;
@@ -119,8 +120,8 @@ public class PageGenerator {
 	}
 	public String getUserName(){
 		String usernameInPage = this.Username;
-		if (usernameInPage.length()>16){
-			usernameInPage = usernameInPage.substring(0, 16);
+		if (usernameInPage.length()>MAX_USERNAME_LENGTH){
+			usernameInPage = usernameInPage.substring(0, MAX_USERNAME_LENGTH-1);
 		}
 		return usernameInPage + "&nbsp;<b class=\"caret\">";
 	}
@@ -180,8 +181,8 @@ public class PageGenerator {
     }
     
     /*
-     * ÔÚrefTextsÖĞÑ°ÕÒÓëtartgetText×îÏàËÆµÄÎÄ±¾£¬²¢·µ»ØÔÚrefTextsÖĞµÄÎ»ÖÃ
-     * Í¨¹ıÑ°ÕÒ×Ö·û´®Ö®¼äµÄ×î³¤¹«¹²×Ö´®À´¼ÆËãÎÄ±¾Ö®¼äµÄÏàËÆ¶È
+     * åœ¨refTextsä¸­å¯»æ‰¾ä¸tartgetTextæœ€ç›¸ä¼¼çš„æ–‡æœ¬ï¼Œå¹¶è¿”å›åœ¨refTextsä¸­çš„ä½ç½®
+     * é€šè¿‡å¯»æ‰¾å­—ç¬¦ä¸²ä¹‹é—´çš„æœ€é•¿å…¬å…±å­—ä¸²æ¥è®¡ç®—æ–‡æœ¬ä¹‹é—´çš„ç›¸ä¼¼åº¦
      */
     public int FindMatchIndex(String targetText, List<String> refTexts){
         int match_index = -1;
@@ -215,10 +216,10 @@ public class PageGenerator {
 						 "        <img class=\"resume-thumbnail\" src=\"" + image_name + "\"></img>\n"+
 						 "            </div>\n"+
 						 "    <div class=\"resume-status\">\n"+
-						 "        <span class=\"lang\"><b class=\"lang-type\">ÓïÑÔ£º</b><i class=\"lang-icon\">ÖĞÎÄ</i></span>\n" +
-						 "        <span class=\"status\"><i class=\"color-good fa fa-check-circle-o\"></i>&nbsp;ÒÑÉú³É</span>\n" +
+						 "        <span class=\"lang\"><b class=\"lang-type\">è¯­è¨€ï¼š</b><i class=\"lang-icon\">ä¸­æ–‡</i></span>\n" +
+						 "        <span class=\"status\"><i class=\"color-good fa fa-check-circle-o\"></i>&nbsp;å·²ç”Ÿæˆ</span>\n" +
 						 "    </div>\n"+
-						 "    <p class=\"update-time\">¸üĞÂÓÚ£º" + update_time + "</p>\n" +
+						 "    <p class=\"update-time\">æ›´æ–°äºï¼š" + update_time + "</p>\n" +
 						 "</div>\n";
 		return element;
 	}
@@ -231,13 +232,13 @@ public class PageGenerator {
 			return;
 		}
 		
-		// Ê×ÏÈĞèÒªÉè¶¨templateµÄÂ·¾¶ 
+		// é¦–å…ˆéœ€è¦è®¾å®štemplateçš„è·¯å¾„ 
 		String template = this.Dashboard_Template;
 		String addButtonImage = this.UploadResumeImageName;
 		File file = new File(template);
 		Document doc = Jsoup.parse(file, "UTF-8");
 		
-		// Create thumbnail list contents£¬there 3 images in one row
+		// Create thumbnail list contentsï¼Œthere 3 images in one row
 		int num = resumeList.size();
 		int rows = (int)Math.floor(num/3);
 		int remains = num - rows*3;
@@ -255,7 +256,7 @@ public class PageGenerator {
 						   "    <div class=\"row\">\n" ;
 			}
 			for (int j=0; j<3; ++j){
-				// »ñÈ¡ÔÚÒ³ÃæÏÔÊ¾Ê±£¬¼òÀúËõÂÔÍ¼(Ğ¡)ËùÔÚÂ·¾¶
+				// è·å–åœ¨é¡µé¢æ˜¾ç¤ºæ—¶ï¼Œç®€å†ç¼©ç•¥å›¾(å°)æ‰€åœ¨è·¯å¾„
 				resume_id = resumeList.get(i*3 + j).getId();
 				String thumbnail_name = PathManager.GetWebSiteUserPath() + "/" + String.valueOf(user_id) + "/thumbnail/resume-" + 
 				        String.valueOf(resume_id) + ".png";
@@ -280,7 +281,7 @@ public class PageGenerator {
 						           "    <div class=\"row\">\n" ;
 			}
 			for (int i=0; i<remains; ++i){
-				// »ñÈ¡ÔÚÒ³ÃæÏÔÊ¾Ê±£¬¼òÀúËõÂÔÍ¼(Ğ¡)ËùÔÚÂ·¾¶
+				// è·å–åœ¨é¡µé¢æ˜¾ç¤ºæ—¶ï¼Œç®€å†ç¼©ç•¥å›¾(å°)æ‰€åœ¨è·¯å¾„
 				resume_id = resumeList.get(rows*3 + i).getId();
 				String thumbnail_name = PathManager.GetWebSiteUserPath() + "/" + String.valueOf(user_id) + "/thumbnail/resume-" +
                         String.valueOf(resume_id) + ".png";
@@ -293,7 +294,7 @@ public class PageGenerator {
 			// Add button image in the same row
 			thumbnail_list +=  "         <div class=\"col-md-4\">\n"+
 			                   "             <div id=\"uploadResumeLink\" class=\"thumbnail\">\n"+
-			                   "                 <div class=\"resume-page\" style=\"background-color: transparent;padding-top: 30px\">\n" +
+			                   "                 <div class=\"resume-page\" style=\"background-color: transparent;padding-top: 15px\">\n" +
 							   "			         <img class=\"resume-thumbnail\" src=\""+ addButtonImage + "\"></img>\n" +
 							   " 		         </div>\n" +
 							   " 		     </div>\n" +
@@ -312,7 +313,7 @@ public class PageGenerator {
 			}
 			thumbnail_list +=  "         <div class=\"col-md-4\">\n"+
 			                   "             <div id=\"uploadResumeLink\" class=\"thumbnail\">\n"+
-			                   "                 <div class=\"resume-page\" style=\"background-color: transparent;padding-top: 30px\">\n" +
+			                   "                 <div class=\"resume-page\" style=\"background-color: transparent;padding-top: 15px\">\n" +
 							   "			         <img class=\"resume-thumbnail\" src=\""+ addButtonImage + "\"></img>\n" +
 							   " 		         </div>\n" +
 							   " 		     </div>\n" +
@@ -324,7 +325,7 @@ public class PageGenerator {
 		// Create thumbnail large list contents
 		String thumbnail_large_list = "";
 		for (int i=0; i<num; ++i){
-			// »ñÈ¡ÔÚÒ³ÃæÏÔÊ¾Ê±£¬¼òÀúËõÂÔÍ¼(´ó)ËùÔÚÂ·¾¶
+			// è·å–åœ¨é¡µé¢æ˜¾ç¤ºæ—¶ï¼Œç®€å†ç¼©ç•¥å›¾(å¤§)æ‰€åœ¨è·¯å¾„
 			resume_id = resumeList.get(i).getId();
 			String thumbnail_large_name = PathManager.GetWebSiteUserPath() + "/" + String.valueOf(user_id) + "/thumbnail-large/resume-" +
                     String.valueOf(resume_id) + ".png";
@@ -369,7 +370,7 @@ public class PageGenerator {
 		String repeatWordsText = "";
 		if (repeatWords != null){
     		for (int i=0; i<repeatWords.size()-1;++i){
-    		    repeatWordsText += (repeatWords.get(i) + "¡¢");
+    		    repeatWordsText += (repeatWords.get(i) + "ã€");
     		}
     		repeatWordsText += repeatWords.get(repeatWords.size()-1);
 		}
@@ -379,15 +380,15 @@ public class PageGenerator {
 		}
 		
 		if (goodNum == 5){
-			state = "ºÜºÃ";
+			state = "å¾ˆå¥½";
 			color = "color-good";
 		}
 		else if( goodNum >=2 ){
-			state = "Ò»°ã";
+			state = "ä¸€èˆ¬";
 			color = "color-soso";
 		}
 		else{
-			state = "ĞèÒªÌáÉı";
+			state = "éœ€è¦æå‡";
 			color = "color-bad";
 		}
 		
@@ -398,38 +399,38 @@ public class PageGenerator {
 							 "    </div>\n"+
 							 "    \n"+
 							 "    <ul class=\"items-nav\" style=\"list-style: none; padding: 0\">\n"+
-							 "        <p class=\"summary-text-presentation\">ÌáÉıÒâ¼û</p>\n";
+							 "        <p class=\"summary-text-presentation\">æå‡æ„è§</p>\n";
 		if (pre_item_score[0] == 1){
-			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">Ê¹ÓÃÁËÇ¿ÓĞÁ¦µÄ¶¯´ÊÁìµ¼±¾¾ä£»¾ä×ÓÓïÌ¬»ı¼«</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">ä½¿ç”¨äº†å¼ºæœ‰åŠ›çš„åŠ¨è¯é¢†å¯¼æœ¬å¥ï¼›å¥å­è¯­æ€ç§¯æ</p></li>\n";
 		} else{
-			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">½¨Òé±¾¾äµÚÒ»¸ö´ÊÓÃÇ¿ÓĞÁ¦µÄ¶¯´Ê£¬"+
-		                         "ÌåÏÖ³ö»ı¼«µÄÓïÌ¬</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">å»ºè®®æœ¬å¥ç¬¬ä¸€ä¸ªè¯ç”¨å¼ºæœ‰åŠ›çš„åŠ¨è¯ï¼Œ"+
+		                         "ä½“ç°å‡ºç§¯æçš„è¯­æ€</p></li>\n";
 		}
 		
 		if (pre_item_score[1] == 1){
-			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">Ê¹ÓÃÁËÊı×ÖÁ¿»¯</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">ä½¿ç”¨äº†æ•°å­—é‡åŒ–</p></li>\n";
 		} else{
-			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">½¨ÒéÔÚ±¾¾äÖĞÍ¨¹ıÊı×ÖÀ´Á¿»¯¹¤×÷¡¢ÌôÕ½»ò³É¹û</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">å»ºè®®åœ¨æœ¬å¥ä¸­é€šè¿‡æ•°å­—æ¥é‡åŒ–å·¥ä½œã€æŒ‘æˆ˜æˆ–æˆæœ</p></li>\n";
 		}
 		
 		if (pre_item_score[2] == 1){
-			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">¾ä×Ó³¤¶ÈºÏÊÊ</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">å¥å­é•¿åº¦åˆé€‚</p></li>\n";
 		} else{
-			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">½¨ÒéÃ¿¾ä²»³¬¹ı2ĞĞ£¬¿ØÖÆÔÚ30-80¸ö×Ö</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">å»ºè®®æ¯å¥ä¸è¶…è¿‡2è¡Œï¼Œæ§åˆ¶åœ¨30-80ä¸ªå­—</p></li>\n";
 		}
 		
 		if (pre_item_score[3] == 1){
-			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">ÎÄÌå×¨Òµ£¬¾ä×Ó¼ò½àÓĞÁ¦</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-check color-good\"></span><p class=\"text\">æ–‡ä½“ä¸“ä¸šï¼Œå¥å­ç®€æ´æœ‰åŠ›</p></li>\n";
 		} else{
-			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">¼òÀúÊÇ×¨ÒµÎÄ±¾£¬½¨Òé²»ÒªÊ¹ÓÃ¿ÚÓïÌå£º"+
-		                         "±ÜÃâÎÒ¡¢¶à´Î¡¢Á¼ºÃ¡¢»ı¼«¡¢Ô²Âú¡¢ÉÆÓÚ¡¢Ò»ÖÂºÃÆÀµÈÀ­µÍ·ÖÊıµÄ´Ê»ã</p></li>\n";
+			presentationLabel += "        <li><span class=\"fa fa-close color-bad\"></span><p class=\"text\">ç®€å†æ˜¯ä¸“ä¸šæ–‡æœ¬ï¼Œå»ºè®®ä¸è¦ä½¿ç”¨å£è¯­ä½“ï¼š"+
+		                         "é¿å…æˆ‘ã€å¤šæ¬¡ã€è‰¯å¥½ã€ç§¯æã€åœ†æ»¡ã€å–„äºã€ä¸€è‡´å¥½è¯„ç­‰æ‹‰ä½åˆ†æ•°çš„è¯æ±‡</p></li>\n";
 		}
 		
 		if (pre_item_score[4] == 1){
-			presentationLabel += "        <li style=\"border-width: 0\"><span class=\"fa fa-check color-good\"></span><p class=\"text\">Ã»ÓĞµ¥´¿¸´Êö¹¤×÷Ö°Ôğ£¬¸üÌåÏÖÁË×öÁËÊ²Ã´</p></li>\n";
+			presentationLabel += "        <li style=\"border-width: 0\"><span class=\"fa fa-check color-good\"></span><p class=\"text\">æ²¡æœ‰å•çº¯å¤è¿°å·¥ä½œèŒè´£ï¼Œæ›´ä½“ç°äº†åšäº†ä»€ä¹ˆ</p></li>\n";
 		} else{
-			presentationLabel += "        <li style=\"border-width: 0\"><span class=\"fa fa-close color-bad\"></span><p class=\"text\">½¨Òé±ÜÃâÔÚ¼òÀúÖĞÊ¹ÓÃ¹Ø¼ü´Ê»ã¶à´Î"+
-		                         "±¾¾äÈçÏÂ´Ê»ãÔÚÈ«ÎÄÖĞÖØ¸´³öÏÖ£º" + repeatWordsText + "</p></li>\n";
+			presentationLabel += "        <li style=\"border-width: 0\"><span class=\"fa fa-close color-bad\"></span><p class=\"text\">å»ºè®®é¿å…åœ¨ç®€å†ä¸­ä½¿ç”¨å…³é”®è¯æ±‡å¤šæ¬¡"+
+		                         "æœ¬å¥å¦‚ä¸‹è¯æ±‡åœ¨å…¨æ–‡ä¸­é‡å¤å‡ºç°ï¼š" + repeatWordsText + "</p></li>\n";
 		}
 
 		if (goodNum == 5){
@@ -446,13 +447,13 @@ public class PageGenerator {
 			presentationLabel += "    </ul>\n"+
 					             "    \n"+
 					             "    <div class=\"samples\">\n"+
-					             "        <p class=\"samples-header color-good\">ÓÅĞã±í´ï</p>\n"+
+					             "        <p class=\"samples-header color-good\">ä¼˜ç§€è¡¨è¾¾</p>\n"+
 					             "            <li style=\"border-width: 0\">" + goodStatement + "</li>\n"+
 								 "        </ul>\n"+
 								 "    </div>\n"+
 								 "    \n"+
 								 "    <div class=\"samples\">\n"+
-								 "        <p class=\"samples-header color-bad\">´íÎó±í´ï</p>\n"+
+								 "        <p class=\"samples-header color-bad\">é”™è¯¯è¡¨è¾¾</p>\n"+
 								 "        <ul class=\"samples-list\">\n"+
 								 "            <li style=\"border-width: 0\">" + badStatement + "</li>\n"+
 								 "        </ul>\n"+
@@ -463,11 +464,11 @@ public class PageGenerator {
 		return presentationLabel;
 	}
 		
-	/* Éú³ÉBenchmarkÒ³Ãæ
-	 * ²ÎÊıËµÃ÷£º
-	 * competencyItems   : ¶ÔÓ¦ÄÜÁ¦ÎåÏîÄÚÈİµÄÎÄ±¾
-	 * presentationItems : ²âÆÀµÄ±í´ïÏî£¬°üÀ¨±í´ïÏîÎÄ±¾ºÍµ¥Ïî·ÖÊı£¬Ã¿¸ö·ÖÊıÈ¡ÖµÎª0/1£»¸ù¾İÃ¿ÏîÕıÈ·ÊıÄ¿ÉèÖÃºÃ£¬Ò»°ãºÍ²»ºÃ
-	 * formatRank        : ¸ñÊ½ÎåÏîÄÚÈİ·ÖÊı£¬Ã¿¸ö·ÖÊıÈ¡Öµ0/1
+	/* ç”ŸæˆBenchmarké¡µé¢
+	 * å‚æ•°è¯´æ˜ï¼š
+	 * competencyItems   : å¯¹åº”èƒ½åŠ›äº”é¡¹å†…å®¹çš„æ–‡æœ¬
+	 * presentationItems : æµ‹è¯„çš„è¡¨è¾¾é¡¹ï¼ŒåŒ…æ‹¬è¡¨è¾¾é¡¹æ–‡æœ¬å’Œå•é¡¹åˆ†æ•°ï¼Œæ¯ä¸ªåˆ†æ•°å–å€¼ä¸º0/1ï¼›æ ¹æ®æ¯é¡¹æ­£ç¡®æ•°ç›®è®¾ç½®å¥½ï¼Œä¸€èˆ¬å’Œä¸å¥½
+	 * formatRank        : æ ¼å¼äº”é¡¹å†…å®¹åˆ†æ•°ï¼Œæ¯ä¸ªåˆ†æ•°å–å€¼0/1
 	 */
 	public void CreateBenchmarkPage(String[][] competencyItems, List<PresentationPageItem> presentationItems, 
 			                        int[] formatRank, long resume_id, String outputName) throws IOException {
@@ -482,32 +483,32 @@ public class PageGenerator {
 		String[] Format_Advices = {
 				// format pages advice
 				"<ul class=\"items-nav\"\n>"+
-	            "    <p class=\"summary-text color-bad\">ÌáÉıÒâ¼û</p>\n"+
-	            "    <li style=\"border-width: 0\">½¨Òé¼òÀú¿ØÖÆÔÚÒ»Ò³</li>\n"+
+	            "    <p class=\"summary-text color-bad\">æå‡æ„è§</p>\n"+
+	            "    <li style=\"border-width: 0\">å»ºè®®ç®€å†æ§åˆ¶åœ¨ä¸€é¡µ</li>\n"+
                 "</ul>\n",
                 
                 // format pages advice
 				"<ul class=\"items-nav\">\n" +
-				"	<p class=\"summary-text color-bad\">ÌáÉıÒâ¼û</p>\n" +
-				"	<li style=\"border-width: 0\">½¨ÒéÍ³Ò»¸ñÊ½£¬×ÖºÅÔÚ11ºÅÉÏÏÂ£¬×ÖÌåÍ³Ò»</li>\n" +
+				"	<p class=\"summary-text color-bad\">æå‡æ„è§</p>\n" +
+				"	<li style=\"border-width: 0\">å»ºè®®ç»Ÿä¸€æ ¼å¼ï¼Œå­—å·åœ¨11å·ä¸Šä¸‹ï¼Œå­—ä½“ç»Ÿä¸€</li>\n" +
 				"</ul>\n",
 				
 				// format margins advice
 				"<ul class=\"items-nav\">\n" +
-				"	<p class=\"summary-text color-bad\">ÌáÉıÒâ¼û</p>\n" +
-				"	<li style=\"border-width: 0\">½¨Òé±£³ÖÒ»¶¨µÄÒ³±ß¾à£¬²»ÖÁÓÚÒ³ÃæÓµ¼·»òÊèËÉ</li>\n" +
+				"	<p class=\"summary-text color-bad\">æå‡æ„è§</p>\n" +
+				"	<li style=\"border-width: 0\">å»ºè®®ä¿æŒä¸€å®šçš„é¡µè¾¹è·ï¼Œä¸è‡³äºé¡µé¢æ‹¥æŒ¤æˆ–ç–æ¾</li>\n" +
 				"</ul>\n",
 				
 				// format key sections advice
 				"<ul class=\"items-nav\">\n" +
-				"	<p class=\"summary-text color-bad\">ÌáÉıÒâ¼û</p>\n" +
-				"	<li style=\"border-width: 0\">½¨ÒéÓĞ½ÌÓı¡¢¾­Àú¡¢ÆäËû3¸ö°å¿é</li>\n" +
+				"	<p class=\"summary-text color-bad\">æå‡æ„è§</p>\n" +
+				"	<li style=\"border-width: 0\">å»ºè®®æœ‰æ•™è‚²ã€ç»å†ã€å…¶ä»–3ä¸ªæ¿å—</li>\n" +
 				"</ul>\n",
 				
 				// format concise advice
 				"<ul class=\"items-nav\">\n" +
-				"	<p class=\"summary-text color-bad\">ÌáÉıÒâ¼û</p>\n" +
-				"	<li style=\"border-width: 0\">½¨Òé²»ÊÊÓÃÌ«¶à¸ñÊ½£¬²»ÓÃ±í¸ñ¡¢²»Ìí¼ÓÍ¼Æ¬¡¢²»·ÖÀ¸</li>\n" +
+				"	<p class=\"summary-text color-bad\">æå‡æ„è§</p>\n" +
+				"	<li style=\"border-width: 0\">å»ºè®®ä¸é€‚ç”¨å¤ªå¤šæ ¼å¼ï¼Œä¸ç”¨è¡¨æ ¼ã€ä¸æ·»åŠ å›¾ç‰‡ã€ä¸åˆ†æ </li>\n" +
 				"</ul>\n"
 		};
 		String[] Format_Element_Header = {"format-pages-header", "format-standards-header", "format-margins-header",
@@ -544,7 +545,7 @@ public class PageGenerator {
 		        PathManager.SystemPathSeparator + "resume.html";
 		File htmlResumeFile = new File(htmlFilename);
 		
-		// ÅĞ¶ÏHTML°æ±¾¼òÀúÊÇ·ñ´æÔÚ
+		// åˆ¤æ–­HTMLç‰ˆæœ¬ç®€å†æ˜¯å¦å­˜åœ¨
 		if (htmlResumeFile.exists()){
 			// If the HTML version resume exists
 			Document htmlDoc = Jsoup.parse(htmlResumeFile, "UTF-8");
@@ -562,7 +563,7 @@ public class PageGenerator {
 			Elements html_resume_divs = html_resume_content.select("div");
 			ArrayList<Element> highlightElement = new ArrayList<Element>();
 			
-			// ±éÀúHTML¼òÀúÖĞµÄËùÓĞDIV±êÇ©£¬ÌáÈ¡Ã¿Ò»ĞĞµÄ¼òÀúÎÄ±¾
+			// éå†HTMLç®€å†ä¸­çš„æ‰€æœ‰DIVæ ‡ç­¾ï¼Œæå–æ¯ä¸€è¡Œçš„ç®€å†æ–‡æœ¬
 			for (int i=0; i<html_resume_divs.size(); ++i){
 				Element text_element = html_resume_divs.get(i);
 				
@@ -570,7 +571,7 @@ public class PageGenerator {
 					// Extract all text in DIV element
 					String lineText = text_element.text();
 					String filtered_lineText = WordFilter(lineText);
-					if (filtered_lineText.length()>ResumeBenchmark.BENCHMARK_MIN_WORDS){
+					if (filtered_lineText.length()>ResumeBenchmark.BENCHMARK_MIN_WORDS_INLINE){
 						htmlResumeLineText.add(filtered_lineText);
 						highlightElement.add(text_element);
 					}
@@ -591,10 +592,16 @@ public class PageGenerator {
 			for (int i=0; i<competencyItems.length; ++i){
 			    String[] competencyText = competencyItems[i];
 				
-				// ÔÚHTML¼òÀúÖĞÆ¥ÅäÃ¿Ò»ÏîÄÜÁ¦
+				// åœ¨HTMLç®€å†ä¸­åŒ¹é…æ¯ä¸€é¡¹èƒ½åŠ›
 				for (int j=0; j<competencyText.length; ++j){
+				    // Filter invalid competency text
+				    if (!competencyText[j].isEmpty() || competencyText[j].length() < ResumeBenchmark.BENCHMARK_MIN_WORDS_INLINE){
+				        continue;
+				    }
+				    
+				    // Extract chinese words and match html lines
 					String t = WordFilter(competencyText[j]);
-					if (t.length()>ResumeBenchmark.BENCHMARK_MIN_WORDS){
+					if (t.length()>ResumeBenchmark.BENCHMARK_MIN_WORDS_INLINE){
     					int match_index = FindMatchIndex(t,htmlResumeLineText);
     					if (match_index != -1){
     					    if (DebugConfig.DEBUG_OUTPUT){
@@ -609,35 +616,37 @@ public class PageGenerator {
 			// Create presentation contens
 			ArrayList<PresentationPageItem> filteredPresentationItems = new ArrayList<PresentationPageItem>();
 			int presentation_num = 0;
-			for (int i=0; i<presentationItems.size(); ++i){
-			    // Add presentation highlights into HTML version resume
-				String t = WordFilter(presentationItems.get(i).getItemText());
-				if (t.length()>ResumeBenchmark.BENCHMARK_MIN_WORDS){
-    				int match_index = FindMatchIndex(t,htmlResumeLineText);
-    				if (match_index != -1){
-    				    if (DebugConfig.DEBUG_OUTPUT){
-                            System.out.println("Presentation-" + i + ", " + match_index + ": " + htmlResumeLineText.get(match_index));
-                        }
-    				    filteredPresentationItems.add(presentationItems.get(i));
-    				    highlightElement.get(match_index).attr("data-presentation", String.valueOf(presentation_num));
-    				    ++presentation_num;
+			String presentationLabelList = "";
+			if (presentationItems != null){
+    			for (int i=0; i<presentationItems.size(); ++i){
+    			    // Add presentation highlights into HTML version resume
+    				String t = WordFilter(presentationItems.get(i).getItemText());
+    				if (t.length()>ResumeBenchmark.BENCHMARK_MIN_WORDS_INLINE){
+        				int match_index = FindMatchIndex(t,htmlResumeLineText);
+        				if (match_index != -1){
+        				    if (DebugConfig.DEBUG_OUTPUT){
+                                System.out.println("Presentation-" + i + ", " + match_index + ": " + htmlResumeLineText.get(match_index));
+                            }
+        				    filteredPresentationItems.add(presentationItems.get(i));
+        				    highlightElement.get(match_index).attr("data-presentation", String.valueOf(presentation_num));
+        				    ++presentation_num;
+        				}
     				}
-				}
+    			}
+    			
+    			if (DebugConfig.DEBUG_OUTPUT){
+    			    System.out.println("Presentation Highlighting...");
+    			    for (int i=0; i<filteredPresentationItems.size(); ++i){
+    			        System.out.println(i + ": " + filteredPresentationItems.get(i).getItemText());
+    			    }
+    			}
+    			
+    		    // Create presentation contents
+    	        for (int i=0; i<filteredPresentationItems.size(); ++i){
+    	            List<String> repeatWordsList = filteredPresentationItems.get(i).getRepeatWordsList();
+    	            presentationLabelList += GeneratePresentationLabelElement(filteredPresentationItems.get(i).getScore(), i, repeatWordsList);
+    	        }
 			}
-			
-			if (DebugConfig.DEBUG_OUTPUT){
-			    System.out.println("Presentation Highlighting...");
-			    for (int i=0; i<filteredPresentationItems.size(); ++i){
-			        System.out.println(i + ": " + filteredPresentationItems.get(i).getItemText());
-			    }
-			}
-			
-		    // Create presentation contents
-	        String presentationLabelList = "";
-	        for (int i=0; i<filteredPresentationItems.size(); ++i){
-	            List<String> repeatWordsList = filteredPresentationItems.get(i).getRepeatWordsList();
-	            presentationLabelList += GeneratePresentationLabelElement(filteredPresentationItems.get(i).getScore(), i, repeatWordsList);
-	        }
 	        
 	        /* Add the created content into HTML page */
 	        Elements presentation_wrapper_div = doc.select("div[data-id=\"presentation-wrapper\"]");

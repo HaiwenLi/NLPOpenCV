@@ -8,21 +8,33 @@ package Util;
 final public class BenchmarkState {
     // Success code
     public static int SuccessCode = 0x000;
-    public static String SuccessCodeDescription = "";
+    public static String SuccessDescription = "";
     
     // Fail to upload file code
     public static int FailtoUplaodFileCode = 0x0F0;
-    public static String FailtoUplaodFileCodeDescription = "ºÜ±§Ç¸£¬ÒòÎªÍøÂç×èÈû£¬ÎÄ¼şÉÏ´«Ê§°Ü£¬ÇëÉÔºóÔÙÊÔ£¡";
+    public static String FailtoUplaodFileDescription = "å¾ˆæŠ±æ­‰ï¼Œå› ä¸ºç½‘ç»œé˜»å¡ï¼Œæ–‡ä»¶ä¸Šä¼ å¤±è´¥ï¼Œè¯·ç¨åå†è¯•ï¼";
     
     // Invalid file code
     public static int InvalidFileCode = 0x0F1;
-    public static String InvalidFileCodeDescription = "ÎŞĞ§µÄ¼òÀúÎÄ¼ş¡£ÇëÖØĞÂÉÏ´«PDF°æ±¾¼òÀú£¡";
+    public static String InvalidFileDescription = "æ— æ•ˆçš„ç®€å†æ–‡ä»¶ã€‚è¯·é‡æ–°ä¸Šä¼ PDFç‰ˆæœ¬ç®€å†ï¼";
     
     // Non Chinese file code
     public static int NonChineseFileCode = 0x0F2;
-    public static String NonChineseFileCodeDescription = "Ä¿Ç°Ö»Ö§³ÖÖĞÎÄ¼òÀú¡£ÄãÉÏ´«µÄ¼òÀúÖĞÎÄÄÚÈİÌ«ÉÙ£¬ÇëÖØĞÂÉÏ´«£¡";
+    public static String NonChineseFileDescription = "ç›®å‰åªæ”¯æŒä¸­æ–‡ç®€å†ã€‚ä½ ä¸Šä¼ çš„æ˜¯è‹±æ–‡ç®€å†æˆ–ä¸­æ–‡å†…å®¹å¤ªå°‘ï¼Œè¯·é‡æ–°ä¸Šä¼ ï¼";
     
     // Fail to generate HTML code
     public static int FailtoGenerateHTMLCode = 0x0F3;
-    public static String FailtoGenerateHTMLCodeDescription = "ºÜ±§Ç¸£¬ÄãµÄ¼òÀúÊÇÉñÀ´Ö®×÷£¬ÎÒÃÇÔİÊ±ÎŞ·¨´¦Àí¡£³ÌĞòÔ±¸ç¸ç»áÆ´Ãü¹¤×÷£¬ÕùÈ¡¾¡¿ìÀí½âÄãµÄ¼òÀú¡«";
+    public static String FailtoGenerateHTMLDescription = "å¾ˆæŠ±æ­‰ï¼Œæˆ‘ä»¬æš‚æ—¶æ— æ³•å¤„ç†ä½ çš„ç®€å†ã€‚ç¨‹åºå‘˜å“¥å“¥ä¼šæ‹¼å‘½å·¥ä½œï¼Œäº‰å–å°½å¿«ç†è§£ä½ çš„ç®€å†ï½";
+    
+    // No user
+    public static int NoUserCode = 0x0F4;
+    public static String NoUserDescription = "å¾ˆæŠ±æ­‰ï¼Œä½ è¿˜æ²¡æœ‰æ³¨å†Œï¼Œæ— æ³•è¿›è¡Œç®€å†è¯„æµ‹ï¼";
+    
+    // Exceed max upload counts
+    public static int ExceedMaxFreeUploadTimesCode = 0x0F5;
+    public static String ExceedMaxFreeUploadTimesDescription = "å¾ˆæŠ±æ­‰ï¼Œä½ å·²è¶…è¿‡å…è´¹ä¸Šä¼ ç®€å†æ¬¡æ•°ï¼";
+    
+    // Fail to analyse resume
+    public static int FailtoAnalyseResumeCode = 0x0F6;
+    public static String FailtoAnalyseResumeDescription = "å¾ˆæŠ±æ­‰ï¼Œåœ¨åˆ†æç®€å†æ—¶å‡ºç°é”™è¯¯ã€‚é”™è¯¯ä»£ç ï¼š0x0F6ï¼Œå¸Œæœ›ä½ èƒ½åŠæ—¶å‘é‚®ä»¶è‡³992756037@qq.comï¼Œå¸®åŠ©æˆ‘ä»¬åšå¾—æ›´å¥½ï¼";
 }

@@ -10,10 +10,11 @@ package Util;
  */
 public class PathManager {
     // The default is: http://opencv.expert
-    public static String WebsitePath = "http://localhost:8080/OpenCV-tomcat7.0/";
-    //"http://opencv.expert/";
+    public static String WebsitePath = "http://opencv.expert/";
+    //"http://localhost:8080/OpenCV-tomcat7.0/";
+    //"http://52.78.215.75:8080/";
       
-    public static String SystemPathSeparator = "\\";
+    public static String SystemPathSeparator = "/";
     public static String UserFolder = "user";
     public static String BenchmarkFolder = "benchmark";
     public static String DictFolder = "dict";
@@ -25,32 +26,32 @@ public class PathManager {
 	public PathManager(String path){
 		this.ServerPath = path;
 		// Resume path in server
-		this.ResumePath = "E:\\home\\kevin\\resume";//"/home/ec2-user/resume";
+		this.ResumePath = "/home/ec2-user/resume";//"E:\\home\\kevin\\resume";
 	}
 	
 	// The path for server
 	public String GetTemplateFolderPath(){
-		// template在服务器中的真实路径
+		// template鍦ㄦ湇鍔″櫒涓殑鐪熷疄璺緞
 		return (this.ServerPath + TemplateFolder);
 	}
 	
 	public String GetDictFolderPath(){
-		// dictionary在服务器中的真实路径
+		// dictionary鍦ㄦ湇鍔″櫒涓殑鐪熷疄璺緞
 		return (this.ServerPath + DictFolder);
 	}
 	
 	public String GetUserFolderPath(){
-		// user在服务器中的真实路径
+		// user鍦ㄦ湇鍔″櫒涓殑鐪熷疄璺緞
 		return (this.ServerPath + UserFolder);
 	}
 
 	public String GetBenchmarkFolderPath(){
-		// benchmark在服务器中的真实路径
+		// benchmark鍦ㄦ湇鍔″櫒涓殑鐪熷疄璺緞
 		return (this.ServerPath + BenchmarkFolder);
 	}
 	
 	public String GetResumeFolderPath(){
-		// resume在服务器中的真实路径，采用这样的路径为了避免PDF2HTML出现问题
+		// resume鍦ㄦ湇鍔″櫒涓殑鐪熷疄璺緞锛岄噰鐢ㄨ繖鏍风殑璺緞涓轰簡閬垮厤PDF2HTML鍑虹幇闂
 		return this.ResumePath;
 	}
 	

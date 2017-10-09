@@ -65,7 +65,7 @@ public class WebPageTransferServlet extends HttpServlet {
 			}
 		}
 		
-		//½«½á¹û´«µ½Ç°Ì¨
+		//å°†ç»“æœä¼ åˆ°å‰å°
 	    PrintWriter out = response.getWriter(); 
 	    String str ="{"+ "\"state\":" + success + ", \"transferPage\":\"" + url + "\"}";
 	    System.out.println(str);

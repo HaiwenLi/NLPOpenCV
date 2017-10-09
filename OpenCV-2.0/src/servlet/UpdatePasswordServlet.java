@@ -44,13 +44,13 @@ public class UpdatePasswordServlet extends HttpServlet {
 		boolean success = false;
 		if (email != null && password != null){
 			if (email.length() > 0 && password.length() > 0){
-				//¸üĞÂÊı¾İ¿âÖĞµÄÃÜÂë
+				//æ›´æ–°æ•°æ®åº“ä¸­çš„å¯†ç 
 				userDao usedao = new userDao();
 				success = usedao.UpdatePassword(email,password);
 			}
 		}
 		
-		//½«½á¹û´«µ½Ç°Ì¨
+		//å°†ç»“æœä¼ åˆ°å‰å°
 	    PrintWriter out = response.getWriter(); 
 		String str ="{"+ "\"state\"" + ":" + success +"}";
 		out.println(str);

@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-CN">
 <head>
-<title>OpenCV 简历评测与提升</title>
+<title>简历评测与提升</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +59,7 @@
 					class="icon-bar"></span>
 			</button>
 			<a id="indexPage" href="index.jsp">
-				<p style="font-size: 26px; font-weight: 600;">OpenCV</p>
+				<p style="font-size: 26px; font-weight: 600;">简历帮</p>
 				<p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p>
 			</a>
 		</div>

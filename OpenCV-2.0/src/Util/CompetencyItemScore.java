@@ -2,8 +2,11 @@ package Util;
 
 /*
  * Competency score of one sub item
- * id:    indicate the original index after sorting (对能力分数进行排序后，记录原先在列表中的位置，以便于提取有关信息)
+ * id:    indicate the original index after sorting (瀵硅兘鍔涘垎鏁拌繘琛屾帓搴忓悗锛岃褰曞師鍏堝湪鍒楄〃涓殑浣嶇疆锛屼互渚夸簬鎻愬彇鏈夊叧淇℃伅)
  * value: competency score of the sub item
+ * 
+ * Date: 2017-10-07
+ * Author: Kevin
  */
 public class CompetencyItemScore {
 	private int id;

@@ -24,116 +24,118 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 public class MailUtil{
-	
-	// ²ÉÓÃÓÊÏäÊÕ¼¯ÓÃ»§ÉÏ´«µÄ¼òÀúÎÄ¼ş
-	// sendMailBox, recvMailBox: "1922884165@qq.com"
-	public static void SendResumeFileToQQMailBox(com.jspsmart.upload.File tmpFile, String filePath, String userEmail,
-			String sendMailBox, String recvMailBox) throws UnsupportedEncodingException {
-		
-		String FileName = tmpFile.getFileName();
-		String FileNamePath= filePath;
-		
-		// ´´½¨Properties ÀàÓÃÓÚ¼ÇÂ¼ÓÊÏäµÄÒ»Ğ©ÊôĞÔ
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true"); // SMTP·¢ËÍÓÊ¼ş£¬±ØĞë½øĞĞÉí·İÑéÖ¤
-		props.put("mail.smtp.host", "smtp.qq.com");
-		props.put("mail.smtp.port", "587");
-		props.put("mail.user", sendMailBox);
-		props.put("mail.password", "koriqnjdsjjceifd"); // STMP¿ÚÁî
-		
-		final String userName = props.getProperty("mail.user");
-	    final String password = props.getProperty("mail.password");
-	    
-	    Authenticator authenticator = new Authenticator() {
-	    	protected PasswordAuthentication getPasswordAuthentication() {
-	            return new PasswordAuthentication(userName, password);
-	        }
-	    };
-	    
-	    Session mailSession = Session.getInstance(props, authenticator);
-	    MimeMessage message = new MimeMessage(mailSession);
-	    
-	    InternetAddress from; // IP address for sender
-		try {
-			from = new InternetAddress(props.getProperty("mail.user"));
-			try { message.setFrom(from);} 
-			catch (MessagingException e) { e.printStackTrace(); }
-		} catch (AddressException e) {
-			e.printStackTrace();
-		}
-		
-		InternetAddress to; // IP address for receiver
-		try {
-			to = new InternetAddress(recvMailBox);
-			try { message.setRecipient(RecipientType.TO, to); } 
-			catch (MessagingException e) { e.printStackTrace(); }
-		} catch (AddressException e1) {
-			e1.printStackTrace();
-		}
-		
-		// ÉèÖÃÓÊ¼ş±êÌâ
-	    try {
-			message.setSubject("¼òÀú");
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	
-	    Multipart multipart = new MimeMultipart();
-	    BodyPart contentPart = new MimeBodyPart();
-	    try {
-			contentPart.setText("ÓÊÏä£º" + userEmail);
-			multipart.addBodyPart(contentPart);
-			BodyPart messageBodyPart = new MimeBodyPart();
-			DataSource source = new FileDataSource(FileNamePath);
-			// Ìí¼Ó¸½¼şµÄÄÚÈİ
-			messageBodyPart.setDataHandler(new DataHandler(source));
-			// Í¨¹ıBase64±àÂëµÄ×ª»»¿ÉÒÔÖĞÎÄ¸½¼ş±êÌâÃûÔÚ·¢ËÍÊ±²»»áÂÒÂë
-			sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();
-			messageBodyPart.setFileName("=?GBK?B?" + enc.encode(FileName.getBytes("GBK")) + "?=");
-			multipart.addBodyPart(messageBodyPart);
-			
-			message.setContent(multipart); //½«multipart¶ÔÏó·Åµ½messageÖĞ
-			message.saveChanges();
-		} catch (MessagingException e1) {
-			e1.printStackTrace();
-		}
-	    
-	    // ·¢ËÍÓÊ¼ş
-	    try {
-	    	MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-	    	mc.addMailcap("text/html;; x-Java-content-handler=com.sun.mail.handlers.text_html");
-	    	mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-	    	mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-	    	mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-	    	mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-	    	CommandMap.setDefaultCommandMap(mc);
-			Transport.send(message);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	// Ê¹ÓÃopencv.expertÓÊÏäÏòÓÃ»§·¢ËÍÓÊ¼ş (Ä¿Ç°²ÉÓÃzoho SMTP·şÎñÆ÷)
-	// zoho: https://www.zoho.com/mail/help/zoho-smtp.html
-	// messageText: The message system want to send, and it contains HTML format
-	// How to send email: http://blog.csdn.net/sunyujia/article/details/2528696
-	public static void SendHtmlMessage(String from, String to, String subject, String messageText) throws Exception {
-    	// ´´½¨Properties ÀàÓÃÓÚ¼ÇÂ¼ÓÊÏäµÄÒ»Ğ©ÊôĞÔ
-	    String _from = "";
-	    if (from.isEmpty()){
-	        _from = "no-reply@opencv.expert";
-	    } else{
-	        _from = from;
-	    }
-	    
+    
+    // é‡‡ç”¨é‚®ç®±æ”¶é›†ç”¨æˆ·ä¸Šä¼ çš„ç®€å†æ–‡ä»¶
+    // sendMailBox, recvMailBox: "1922884165@qq.com"
+    public static void SendResumeFileToQQMailBox(com.jspsmart.upload.File tmpFile, String filePath, String userEmail,
+            String sendMailBox, String recvMailBox) throws UnsupportedEncodingException {
+        
+        String FileName = tmpFile.getFileName();
+        String FileNamePath = filePath;
+        
+        // åˆ›å»ºProperties ç±»ç”¨äºè®°å½•é‚®ç®±çš„ä¸€äº›å±æ€§
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true"); // SMTPå‘é€é‚®ä»¶ï¼Œå¿…é¡»è¿›è¡Œèº«ä»½éªŒè¯
+        props.put("mail.smtp.host", "smtp.qq.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.user", sendMailBox);
+        props.put("mail.password", "koriqnjdsjjceifd"); // STMPå£ä»¤
+        
+        final String userName = props.getProperty("mail.user");
+        final String password = props.getProperty("mail.password");
+        
+        Authenticator authenticator = new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userName, password);
+            }
+        };
+        
+        Session mailSession = Session.getInstance(props, authenticator);
+        MimeMessage message = new MimeMessage(mailSession);
+        
+        InternetAddress from; // IP address for sender
+        try {
+            from = new InternetAddress(props.getProperty("mail.user"));
+            try { message.setFrom(from);} 
+            catch (MessagingException e) { e.printStackTrace(); }
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
+        
+        InternetAddress to; // IP address for receiver
+        try {
+            to = new InternetAddress(recvMailBox);
+            try { message.setRecipient(RecipientType.TO, to); } 
+            catch (MessagingException e) { e.printStackTrace(); }
+        } catch (AddressException e1) {
+            e1.printStackTrace();
+        }
+        
+        // è®¾ç½®é‚®ä»¶æ ‡é¢˜
+        try {
+            message.setSubject("ç®€å†");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    
+        Multipart multipart = new MimeMultipart();
+        BodyPart contentPart = new MimeBodyPart();
+        try {
+            contentPart.setText("é‚®ç®±ï¼š" + userEmail);
+            multipart.addBodyPart(contentPart);
+            BodyPart messageBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(FileNamePath);
+            // æ·»åŠ é™„ä»¶çš„å†…å®¹
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            // é€šè¿‡Base64ç¼–ç çš„è½¬æ¢å¯ä»¥ä¸­æ–‡é™„ä»¶æ ‡é¢˜ååœ¨å‘é€æ—¶ä¸ä¼šä¹±ç 
+            sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();
+            messageBodyPart.setFileName("=?GBK?B?" + enc.encode(FileName.getBytes("GBK")) + "?=");
+            multipart.addBodyPart(messageBodyPart);
+            
+            message.setContent(multipart); //å°†multipartå¯¹è±¡æ”¾åˆ°messageä¸­
+            message.saveChanges();
+        } catch (MessagingException e1) {
+            e1.printStackTrace();
+        }
+        
+        // å‘é€é‚®ä»¶
+        try {
+            MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+            mc.addMailcap("text/html;; x-Java-content-handler=com.sun.mail.handlers.text_html");
+            mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+            mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+            mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+            mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+            CommandMap.setDefaultCommandMap(mc);
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    // ä½¿ç”¨opencv.experté‚®ç®±å‘ç”¨æˆ·å‘é€é‚®ä»¶ (ç›®å‰é‡‡ç”¨zoho SMTPæœåŠ¡å™¨)
+    // zoho: https://www.zoho.com/mail/help/zoho-smtp.html
+    // messageText: The message system want to send, and it contains HTML format
+    // How to send email: http://blog.csdn.net/sunyujia/article/details/2528696
+    public static void SendHtmlMessage(String from, String to, String subject, String messageText) throws Exception {
+        // åˆ›å»ºProperties ç±»ç”¨äºè®°å½•é‚®ç®±çš„ä¸€äº›å±æ€§
+        String _from = "";
+        if (from.isEmpty()){
+            _from = "no-reply@opencv.expert";
+        } else{
+            _from = from;
+        }
+        
         Properties props = new Properties();
         props.setProperty("mail.transport.protocol", "smtp"); 
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.auth", "true");          //±íÊ¾SMTP·¢ËÍÓÊ¼ş£¬±ØĞë½øĞĞÉí·İÑéÖ¤
-        props.put("mail.smtp.host", "smtp.zoho.com"); //´Ë´¦ÌîĞ´SMTP·şÎñÆ÷
+        props.put("mail.smtp.auth", "true");          //è¡¨ç¤ºSMTPå‘é€é‚®ä»¶ï¼Œå¿…é¡»è¿›è¡Œèº«ä»½éªŒè¯
+        props.put("mail.smtp.host", "smtp.zoho.com"); //æ­¤å¤„å¡«å†™SMTPæœåŠ¡å™¨
         props.put("mail.smtp.port", "587");   
         props.put("mail.user", _from);
-        props.put("mail.password", "jianLiPangPang#@!"); // STMP¿ÚÁî(Èô·¢ËÍÓÊ¼ş¹¦ÄÜ´æÔÚÎÊÌâ£¬Ğè¼ì²é¸ÃÃÜÂëÊÇ·ñÕıÈ·£¡)
+        props.put("mail.password", "jianLiPangPang#@!"); // STMPå£ä»¤(è‹¥å‘é€é‚®ä»¶åŠŸèƒ½å­˜åœ¨é—®é¢˜ï¼Œéœ€æ£€æŸ¥è¯¥å¯†ç æ˜¯å¦æ­£ç¡®ï¼)
         
         final String userName = props.getProperty("mail.user");
         final String password = props.getProperty("mail.password");
@@ -143,34 +145,34 @@ public class MailUtil{
             }
         };
         
-        // »ñµÃÓÊ¼ş»á»°¶ÔÏó  
+        // è·å¾—é‚®ä»¶ä¼šè¯å¯¹è±¡  
         Session session = Session.getInstance(props, authenticator);
         
-        // ´´½¨MIMEÓÊ¼ş¶ÔÏó  
+        // åˆ›å»ºMIMEé‚®ä»¶å¯¹è±¡  
         MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom(new InternetAddress(_from));                            // from
         mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));// to  
         mimeMessage.setSubject(subject);  
-        mimeMessage.setSentDate(new java.util.Date());  // ·¢ËÍÈÕÆÚ  
-        Multipart mp = new MimeMultipart("related");    // relatedÒâÎ¶×Å¿ÉÒÔ·¢ËÍhtml¸ñÊ½µÄÓÊ¼ş  
+        mimeMessage.setSentDate(new java.util.Date());  // å‘é€æ—¥æœŸ  
+        Multipart mp = new MimeMultipart("related");    // relatedæ„å‘³ç€å¯ä»¥å‘é€htmlæ ¼å¼çš„é‚®ä»¶  
         
-        BodyPart bodyPart = new MimeBodyPart();         // ÓÊ¼şÕıÎÄ
+        BodyPart bodyPart = new MimeBodyPart();         // é‚®ä»¶æ­£æ–‡
         bodyPart.setDataHandler(new DataHandler(messageText, "text/html;charset=utf-8"));
         
         mp.addBodyPart(bodyPart);  
-        mimeMessage.setContent(mp);                     // ÉèÖÃÓÊ¼şÄÚÈİ¶ÔÏó 
+        mimeMessage.setContent(mp);                     // è®¾ç½®é‚®ä»¶å†…å®¹å¯¹è±¡ 
         
         try{
-	        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-	        mc.addMailcap("text/html;; x-Java-content-handler=com.sun.mail.handlers.text_html");
-	        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-	        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-	        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-	        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-	        CommandMap.setDefaultCommandMap(mc);
-	        Transport.send(mimeMessage);
+            MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+            mc.addMailcap("text/html;; x-Java-content-handler=com.sun.mail.handlers.text_html");
+            mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+            mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+            mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+            mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+            CommandMap.setDefaultCommandMap(mc);
+            Transport.send(mimeMessage);
         } catch (MessagingException e){
-        	e.printStackTrace();
+            e.printStackTrace();
         }
-    }	
+    }   
 }

@@ -1,8 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-CN">
 <head>
-<title>OpenCV 简历评测与提升</title>
+<title>简历评测与提升</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +53,7 @@
 					class="icon-bar"></span>
 			</button>
 			<a id="indexPage" href="index.jsp">
-				<p style="font-size: 26px; font-weight: 600;">OpenCV</p>
+				<p style="font-size: 26px; font-weight: 600;">简历帮</p>
 				<p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p>
 			</a> <a id="indexPage" class="hide" href="index.jsp"></a>
 		</div>
@@ -69,7 +70,7 @@
 					<label class="radio-inline"> <input type="radio"
 						name="business" id="business-option" checked> 商科/管理
 					</label> <label class="radio-inline" style="color: gray"> <input
-						type="radio" name="academy" id="academy-option" disabled>学术/研发
+						type="radio" name="academy" id="academy-option" disabled>科研/开发
 						(<small>开发中</small>)
 					</label>
 				</div>
@@ -113,18 +114,32 @@
 	</section>
 
 	<!-- Modal -->
-	<div class="modal fade" id="upload-modal" tabindex="-1" role="dialog" aria-labelledby="resume-upload">
+	<div class="modal fade" id="upload-modal" tabindex="-1" role="dialog"
+		aria-labelledby="resume-upload">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content loader-content">
 				<div class="modal-body">
+					<div style="margin-bottom: 30px;">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true"
+							stype="position: relative; right: 0; margin-right: 20px">&times;</button>
+					</div>
 					<div class="row">
 						<div>
-						    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" stype="position: relative; right: 0; margin-right: 20px">&times;</button>
-						</div>
-						<div class="col-xs-12 col-md-8 col-xs-offset-0 col-md-push-2">
-							<p>同学，不要急</br> 正在上传并分析你的简历，请稍等</br></p>
+							<p>同学，欢迎使用简历帮，测评、提升你的简历；</p>
+							<p>
+								系统正在上传和分析你的简历，请稍后。<a id="showServerDetails"
+									href="javascript:void(0)">查看详细处理流程</a>
+							</p>
+							<ul id="serverDetailsList" class="hide">
+								<li>上传简历至服务器；</li>
+								<li>分析简历排版结构；</li>
+								<li>提取简历内容；</li>
+								<li>使用NLP分析、测评简历内容；</li>
+								<li>生成简历测评页面。</li>
+							</ul>
 							<div class="loader">
-								<img src="images/icon/preloader.gif"></img>
+								<img src="images/icon/upload_loader.gif"></img>
 							</div>
 						</div>
 					</div>
@@ -134,21 +149,21 @@
 	</div>
 
 	<footer id="footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-6 col-sm-6 copyright">
-					<p>
-						&copy; 2017 <a href="#header"></a>. All Rights Reserved.
-					</p>
-				</div>
-				<div class="col-xs-6 col-sm-6 footer-social-icons">
-					<span>Follow us:</span> <a href=""><i class="fa fa-facebook"></i></a>
-					<a href=""><i class="fa fa-twitter"></i></a> <a href=""><i
-						class="fa fa-google-plus"></i></a> <a href=""><i
-						class="fa fa-pinterest-p"></i></a>
-				</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-6 col-sm-6 copyright">
+				<p>
+					&copy; 2017 <a href="#header"></a>. All Rights Reserved.
+				</p>
+			</div>
+			<div class="col-xs-6 col-sm-6 footer-social-icons">
+				<span>Follow us:</span> <a href=""><i class="fa fa-facebook"></i></a>
+				<a href=""><i class="fa fa-twitter"></i></a> <a href=""><i
+					class="fa fa-google-plus"></i></a> <a href=""><i
+					class="fa fa-pinterest-p"></i></a>
 			</div>
 		</div>
+	</div>
 	</footer>
 
 	<script type="text/javascript" src="js/jquery.min.js"></script>

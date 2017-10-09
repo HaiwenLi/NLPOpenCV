@@ -16,7 +16,7 @@
 
 @media screen {
 	#page-container {
-	/* `bottom' and `right' are required for lazy page loading in pdf2htmlEX.js (page visibility test)
+		/* `bottom' and `right' are required for lazy page loading in pdf2htmlEX.js (page visibility test)
      * alternatively you may set width and height
      */
 		bottom: 0;

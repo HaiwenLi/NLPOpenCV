@@ -17,7 +17,7 @@ $(document).on("ready",function(){
 
 	// for uploading file
 	$("#input-file").on("change",uploadFile);
-	$('#upload-modal').modal({backdrop: 'static', keyboard: false});
+	$('#upload-modal').modal({backdrop: 'static', keyboard: false, show: false});
 	
 	// for resume dashboard, competency and format
 	$("div.comment").on("click", showCompetencyImprovement);
@@ -49,6 +49,17 @@ $(document).on("ready",function(){
 	else{
 		$("div.copyright").addClass("col-xs-6 col-sm-6");
 	}
+
+	// Show details of server proseccings
+	$("#showServerDetails").on("click", function(){
+		if ($("#serverDetailsList").hasClass("hide")){
+			$("#serverDetailsList").removeClass("hide");
+			$("#showServerDetails").html("隐藏详细处理流程");
+		} else{
+			$("#serverDetailsList").addClass("hide");
+			$("#showServerDetails").html("显示详细处理流程");
+		}
+	});
 });
 
 // ----------------------------------------------
@@ -160,7 +171,15 @@ function uploadFile(){
 						$("#PageTransferLink").attr("href",status.transferPage);
 						document.getElementById("PageTransferLink").click();
 					}else{ // modified by Lantao on 2017-10-01
-						alert(null, status.reason, null, {type: "error"});
+						var error_description = "";
+						if (status.state == 0x0f0){error_description = "很抱歉，因为网络阻塞，文件上传失败，请稍后再试！";}
+						else if(status.state == 0x0f1){error_description = "无效的简历文件。请重新上传PDF版本简历！";}
+						else if(status.state == 0x0f2){error_description = "目前只支持中文简历。你上传的是英文简历或中文内容太少，请重新上传！";}
+						else if(status.state == 0x0f3){error_description = "很抱歉，我们暂时无法处理你的简历。程序员哥哥会拼命工作，争取尽快理解你的简历～";}
+						else if(status.state == 0x0f4){error_description = "很抱歉，你还没有注册，无法进行简历评测！";}
+						else if(status.state == 0x0f5){error_description = "很抱歉，你已超过免费上传简历次数！";}
+						else if(status.state == 0x0f6){error_description = "很抱歉，在分析简历时出现错误。错误代码：0x0F6，希望你能及时发邮件至992756037@qq.com，帮助我们做得更好！";}
+						alert(null, error_description, null, {type: "error"});
 					}
 				},
 				error: function(){

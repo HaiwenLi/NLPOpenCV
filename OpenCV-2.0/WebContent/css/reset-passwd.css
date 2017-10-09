@@ -1,9 +1,5 @@
 /* IMPORT SECTION */
 @import
-	url("http://fonts.googleapis.com/css?family=Raleway:200,300,600,700&subset=latin,latin-ext")
-	;
-
-@import
 	url('https://fonts.googleapis.com/css?family=Open+Sans|Work+Sans:400,500,600,700')
 	;
 
@@ -11,7 +7,7 @@
 body {
 	height: 100%;
 	color: #000;
-	font-family: "Raleway", Helvetica, Arial, sans-serif;
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
 	background-color: #fff;
 }
 
@@ -30,7 +26,6 @@ a, a:hover, a:active, a:focus, button:focus {
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: 'Raleway', sans-serif;
 	font-weight: 700;
 }
 
@@ -211,7 +206,7 @@ label {
 }
 
 .login-wrapper .box p {
-	margin-top: -15px;
+	margin-top: -5px;
 	margin-bottom: 25px;
 	font-size: 13px;
 	font-weight: normal;

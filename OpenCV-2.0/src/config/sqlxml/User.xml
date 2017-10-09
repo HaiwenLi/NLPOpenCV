@@ -32,37 +32,40 @@
 	</resultMap>
 
 	<select id="find" parameterType="bean.user" resultMap="UserResult">
-		SELECT mailbox FROM user WHERE 1=1
-		<if test="mailbox !=null">
+		SELECT id FROM user WHERE 1=1
+		<if test="mailbox != null">
 			and mailbox=#{mailbox}
 		</if>
 	</select>
 
 	<!-- 根据邮箱返回user id -->
 	<select id="find_userid" parameterType="bean.user" resultMap="UserResult">
-		SELECT * FROM user WHERE 1=1
-		<if test="mailbox !=null">
+		SELECT id FROM user WHERE 1=1
+		<if test="mailbox != null">
 			and mailbox=#{mailbox}
 		</if>
 	</select>
 
 	<select id="findlogin" parameterType="bean.user" resultMap="UserResult">
-		SELECT * FROM user WHERE 1=1
-		<if test="mailbox !=null">
+		SELECT id FROM user WHERE 1=1
+		<if test="mailbox != null">
 			and mailbox=#{mailbox}
 		</if>
-		<if test="password !=null">
+		<if test="password != null">
 			and password=#{password}
 		</if>
 	</select>
 
-	<insert id="register" parameterType="bean.user" useGeneratedKeys="true" keyProperty="id">
-		insert into user(username,password,mailbox,tel) values
+	<insert id="register" parameterType="bean.user"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		user(username,password,mailbox,tel) values
 		(#{username},#{password},#{mailbox},#{tel})
 	</insert>
 
 	<update id="updateOne" parameterType="bean.user">
-		update user SET password=#{password} where mailbox=#{mailbox}
+		update user SET
+		password=#{password} where id=#{id}
 	</update>
 
 	<select id="find_username" parameterType="bean.user" resultMap="UserResult">
@@ -71,12 +74,13 @@
 			and mailbox=#{mailbox}
 		</if>
 	</select>
-	
-	<select id="find_usernameByID" parameterType="bean.user" resultMap="UserResult">
-        SELECT username FROM user WHERE 1=1
-        <if test="id != null">
-            and id=#{id}
-        </if>
-    </select>
-    
+
+	<select id="find_usernameByID" parameterType="bean.user"
+		resultMap="UserResult">
+		SELECT username FROM user WHERE 1=1
+		<if test="id != null">
+			and id=#{id}
+		</if>
+	</select>
+
 </mapper>

@@ -17,7 +17,7 @@ public class userDao {
 		List<user> userList = new ArrayList<user>();
 		
 		try{
-			sqlsession=dbaccess.getSqlSession();
+			sqlsession = dbaccess.getSqlSession();
 			user useone = new user();
 			useone.setMailbox(mail);
 			userList = sqlsession.selectList("find",useone);
@@ -27,9 +27,7 @@ public class userDao {
 			else{
 				return true;
 			}
-			
 		}catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			if(sqlsession !=null){
@@ -57,14 +55,13 @@ public class userDao {
 			else{
 				// If the user has registered
 				user oneUser = new user();
-				oneUser.setMailbox(email);
+				oneUser.setId(userList.get(0).getId());
 				oneUser.setPassword(password);
 				sqlsession.update("updateOne", oneUser);
 				sqlsession.commit();
 				return true;
 			}			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally{
 				if(sqlsession != null){
@@ -92,7 +89,6 @@ public class userDao {
 				return true;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			if(sqlsession !=null){
@@ -120,7 +116,6 @@ public class userDao {
 			sqlsession.commit();
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			if(sqlsession !=null){
@@ -140,12 +135,10 @@ public class userDao {
 			sqlsession=dbaccess.getSqlSession();
 			user useone = new user();
 			useone.setMailbox(email);
-			user userone=sqlsession.selectOne("find_userid",useone);
-			id=userone.getId();
-			sqlsession.commit();
-			 
+			user foundUser = sqlsession.selectOne("find_userid",useone);
+			id = foundUser.getId();
+			sqlsession.commit(); 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			if(sqlsession !=null){

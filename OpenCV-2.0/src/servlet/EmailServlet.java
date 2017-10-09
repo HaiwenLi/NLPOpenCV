@@ -1,20 +1,29 @@
 package servlet;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.Date;
+import java.util.Iterator;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.json.JSONException;
 
 import com.jspsmart.upload.Request;
 import com.jspsmart.upload.SmartUpload;
@@ -27,7 +36,9 @@ import Dao.userDao;
 import Util.MailUtil;
 import Util.ResumeBenchmark;
 import Util.ConvertPDFToPng;
+import Util.DebugConfig;
 import Util.BenchmarkScore;
+import Util.BenchmarkState;
 import Util.ConvertPDFToHtml;
 import Util.PageGenerator;
 import Util.PathManager;
@@ -38,7 +49,7 @@ import Util.PathManager;
 @WebServlet("/EmailServlet")
 public class EmailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	public static final int MAX_RESUME_NUM = 3;
+	public static final int MAX_RESUME_NUM = 7;
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -47,293 +58,163 @@ public class EmailServlet extends HttpServlet {
         super();
     }
         
-    // Load benchmark score from JSON file
-    public BenchmarkScore LoadBenchmarkScoreFromJSON(String jsonFilename){
-    	if (jsonFilename == null || !jsonFilename.endsWith(".json")){
-    		return null;
-    	}
-    	BenchmarkScore benchmarkScore = new BenchmarkScore();
-    	benchmarkScore.parseBenchmarkScoreJSONFile(jsonFilename);
-    	return benchmarkScore;
-    }
-    
-    public void SaveBenchmarkScores(List<BenchmarkScore> allBenchmarkScores, String dashBoardFilename){
-    	if (allBenchmarkScores.isEmpty()){
-    		return;
-    	}
-    	BenchmarkScore.saveBenchmarkScoreList(allBenchmarkScores, dashBoardFilename);
-    }
-    
-    // Generate resume thumbnails
-    public void GenerateUserResumeThumbnails(String serverRootPath,List<resume> resumeList){
-    	if (resumeList.isEmpty()){ return; }
-    	
-    	String separator = PathManager.SystemPathSeparator;
-    	long user_id = resumeList.get(0).getUserid();
-    	PathManager pathManager  = new PathManager(serverRootPath);
-   
-    	String thumbnail_path = pathManager.GetUserFolderPath() + separator + String.valueOf(user_id) +  separator + "thumbnail";
-    	String thumbnail_large_path = pathManager.GetUserFolderPath() + separator + String.valueOf(user_id) + separator + "thumbnail-large";
-    	
-    	// Check whether the thumbnail folder exists
-    	File thumbnail_file = new File(thumbnail_path);
-    	if (!thumbnail_file.exists()){
-    		thumbnail_file.mkdirs();
-    	}
-    	File thumbnail_large_file = new File(thumbnail_large_path);
-    	if (!thumbnail_large_file.exists()){
-    		thumbnail_large_file.mkdirs();
-    	}
-    	
-    	ConvertPDFToPng converter = new ConvertPDFToPng();
-    	for (int i=0; i<resumeList.size(); ++i){
-    		String resume_filename = resumeList.get(i).getFilepath(); 
-    		
-    		// Start to generate thumbnails for resume file
-    		if (resume_filename.endsWith(".pdf") || resume_filename.endsWith(".PDF")){
-    			long resume_id = resumeList.get(i).getId();
-    			String thumbnail_filename = thumbnail_path + separator + "resume-" + String.valueOf(resume_id) + ".png";
-    			String thumbnail_large_filename = thumbnail_large_path + separator + "resume-" + String.valueOf(resume_id) + ".png";
-    			converter.GenerateThumbnails(resume_filename, thumbnail_filename, 0);
-    			converter.GenerateThumbnails(resume_filename, thumbnail_large_filename, 1);
-    		}
-    	}
-    }
-        
-    // Generate resume benchmark page
-    public List<BenchmarkScore> GenerateResumeBenchmarkPage(String serverRootPath, String userEmail, List<resume> resumeList){
-    	if (resumeList.isEmpty()){ return null; }
-    	
-    	// Get user id and initialize benchmark scores list
-    	long user_id = resumeList.get(0).getUserid();
-    	String separator = PathManager.SystemPathSeparator;
-    	List<BenchmarkScore> allBenchmarkScores = new ArrayList<BenchmarkScore>();
-    	
-    	// Process each PDF resume file, and compute the benchmark score
-    	BenchmarkScore benchmarkScore = null;
-    	PathManager pathManager = new PathManager(serverRootPath);
-    	
-    	for (int i=0; i<resumeList.size(); ++i){
-    	    // ³õÊ¼»¯HTML°æ¼òÀú´æ´¢Î»ÖÃ¼°ÎÄ¼şÃû
-    	    String dest_dir = pathManager.GetBenchmarkFolderPath() + separator + String.valueOf(resumeList.get(i).getId());
-    		String htmlResumeFilename = "resume.html";
-    		
-    		// »ñÈ¡¼òÀúID
-            long resume_id = resumeList.get(i).getId();
-            
-    		File file = new File((dest_dir + separator + htmlResumeFilename));
-    		if (!file.exists()){ // If the resume wasn't analyzed
-    			// Check whether the folder has been created
-    		    File htmlResumeFolder = new File(dest_dir);
-    		    if (!htmlResumeFolder.exists()){
-    		        htmlResumeFolder.mkdirs();
-    		    }
-    			
-    			// Start to analyzing the resume file (PDF file)
-    			String resumeFilename = resumeList.get(i).getFilepath();
-    			
-    			if (resumeFilename.endsWith(".pdf") || resumeFilename.endsWith(".PDF")){
-    				// Convert PDF file into HTML page
-    			    System.out.println("Convert PDF resume into HTML pages");
-    				ConvertPDFToHtml.PDF2HtmlEx(resumeFilename, dest_dir, htmlResumeFilename);
-
-    				// Waring: check the resume filename to prevent from the complex resume filename;
-    				//         If the resume filename contains some special characters, WE SHOULD TEST !!!
-    				ResumeBenchmark resumeBenchmark = new ResumeBenchmark(resumeFilename);
-    				
-    				System.out.println("Start to compute resume " + resume_id + " benchmark");
-    				benchmarkScore = resumeBenchmark.ComputeResumeBenchmarkScore(serverRootPath);
-    				benchmarkScore.setUserId(user_id);
-    				benchmarkScore.setResumeId(resume_id);
-    				benchmarkScore.setResumeFilename(resumeList.get(i).getFilename());
-    				benchmarkScore.setResumePath(resumeFilename);
-    				
-    				String benchmarkScoreOutputJSONFilename = pathManager.GetBenchmarkFolderPath() + separator + 
-    				        String.valueOf(resume_id) + separator + "benchmark.json";
-    				benchmarkScore.saveBenchmarkScore(benchmarkScoreOutputJSONFilename);
-    				
-    				// Generate resume benchmark page
-    				resumeBenchmark.setUsername(userEmail);
-    				resumeBenchmark.setUserEmail(userEmail);
-    				resumeBenchmark.GenerateBenchmarkPage(serverRootPath, resume_id);
-    				
-    				allBenchmarkScores.add(benchmarkScore);
-    			}
-    		}
-    		else { // If the resume had been analyzed
-    			// Load benchmark score from the JSON file
-    			String jsonFilename = pathManager.GetBenchmarkFolderPath() + separator +  String.valueOf(resume_id) + separator + "benchmark.json";
-    			benchmarkScore = LoadBenchmarkScoreFromJSON(jsonFilename);
-    			
-    			if (benchmarkScore != null){
-    				allBenchmarkScores.add(benchmarkScore);
-    			}
-    		}
-    	}
-    	return allBenchmarkScores;
-    }
-        
-    // Update user dashboard page
-    public void UpdateDashboardPage(String serverRootPath, String userEmail, List<resume> resumeList){
-    	if (resumeList.isEmpty()){ return; }
-    	long user_id = resumeList.get(0).getUserid();
-    	
-    	// Generate user resume thumbnails
-    	String separator = PathManager.SystemPathSeparator;
-    	PathManager pathManager = new PathManager(serverRootPath);
-    	GenerateUserResumeThumbnails(serverRootPath,resumeList);
-    	
-    	// Update resume scores
-    	String userPath = pathManager.GetUserFolderPath();
-    	String dashboardJSONName = userPath + separator + String.valueOf(user_id) + separator + "dashboard.json";
-    	List<BenchmarkScore> allBenchmarkScores = GenerateResumeBenchmarkPage(serverRootPath, userEmail, resumeList);
-    	SaveBenchmarkScores(allBenchmarkScores, dashboardJSONName);
-    	
-    	// Use dashboard template to generate a new dashboard page
-    	System.out.println("Start to generate benchmark page");
-    	
-    	PageGenerator pageGenerator = new PageGenerator();
-    	String dashboard_template = pathManager.GetTemplateFolderPath() + separator + "dashboard-template.html";
-    	String addButtonImage = PathManager.GetImagePath() + "/add.png";
-    	pageGenerator.setDashboard_Template(dashboard_template);
-    	pageGenerator.setUploadResumeImageName(addButtonImage);
-    	
-    	String dashboardPageName = userPath + separator + String.valueOf(user_id) + separator + "dashboard.jsp";
-    	try {
-    		String dashboardScoresForClient = BenchmarkScore.GenerateBenchmarkScoreForClient(allBenchmarkScores);
-    		pageGenerator.setUserName(userEmail);
-    		pageGenerator.setUserEmail(userEmail);
-			pageGenerator.CreateDashboardPage(resumeList, dashboardScoresForClient, dashboardPageName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	System.out.println("Finish to generate benchmark page");
-    }
-    
-    // Send response email to user for receiving the upload resume
-    public void SendReceiveResumeResponseEmailToUser(String userEmail, String resumeFilename) throws UnsupportedEncodingException{
-        String subject = "opencv.expertÒÑÊÕµ½ÄúÉÏ´«µÄ¼òÀú";
-        String content = "<div style=\"width: 650px; margin: 0 auto; padding: 40px 20px; background-color: #f5f5f5; color: #000; text-align: center; font-size: 16px\">" +
-                "<h3 style=\"font-size: 25px; line-height: 27px; text-align: center;\">" +
-                "È«¹úµÚÒ»¿î</br>ÈË¹¤ÖÇÄÜ ¡°²â¼òÀú¡¢¸Ä¼òÀú¡± ¹¤¾ß" + 
-                "</h3>" +
-                "<p>" + userEmail + "£¬ÄãºÃ£¡<br/>ÎÒÃÇÒÑ¾­ÊÕµ½ÄúÉÏ´«µÄ¼òÀú" + "¡£<br/>" +
-                "</p>"+
-                "</div>";
-        
-        try {
-            // The from must be empty
-            MailUtil.SendHtmlMessage("", userEmail, subject, content);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {       
-	    // ±äÁ¿³õÊ¼»¯
-        String userEmail = "";
-        String userName = "";
+	    // å˜é‡åˆå§‹åŒ–
         long user_id = -1;
-		boolean success = false;
+		int success = 0x000;
 		PrintWriter out = response.getWriter(); 
-		
-		// »ñÈ¡ÓÃ»§ÓÊÏä
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+
+		// è·å–ç”¨æˆ·é‚®ç®±
 		SmartUpload upload = new SmartUpload(); 
 		Request req = upload.getRequest();
 		String email = "";
 		String resumeFilename = "";
 		String separator = PathManager.SystemPathSeparator;
 		
-		// »ñÈ¡ÉÏ´«µÄ¼òÀúÎÄ¼ş
+		// è·å–ä¸Šä¼ çš„ç®€å†æ–‡ä»¶
 		String serverRootPath = getServletContext().getRealPath("/");
 		System.out.println(serverRootPath); // output the web site path
-		PathManager pathManager = new PathManager(serverRootPath);
 		
+		PathManager pathManager = new PathManager(serverRootPath);
 		try{
-    		  upload.initialize(getServletConfig(), request, response);  
-    		  upload.setAllowedFilesList("doc,docx,pdf");// ÔÊĞíÉÏ´«µÄÎÄ¼şÀàĞÍ  
-    		  upload.setDeniedFilesList("exe,bat,jsp"); // ¾Ü¾øÉÏ´«µÄÎÄ¼şÀàĞÍ  
-    		  upload.setMaxFileSize(1024*1024);      // ÔÊĞíÉÏ´«ÎÄ¼şµÄµ¥¸ö×î´ó´óĞ¡ Îª1M
-    		  upload.setTotalMaxFileSize(1024*1024*2); // ÔÊĞíÉÏ´«ÎÄ¼şµÄ×î´ó´óĞ¡×ÜºÍÎª2M
-    		  
-    		  // ÉÏ´«Êı¾İ
-    		  upload.upload();
-    		  
-    		  email = req.getParameter("email");
-    		  String filename = upload.getFiles().getFile(0).getFileName(); // »ñÈ¡¼òÀúÎÄ¼şÃû
-    		  resumeFilename = new String(filename.getBytes("GBK"),"utf-8");
-    		  if (email == null || email.isEmpty()){
-    			  System.out.println("Email Servlet: user email is empty");
-    			  return;
+		      // æ£€æŸ¥ä¸Šä¼ çš„æ–‡ä»¶ç±»å‹å’Œå¤§å°
+    		  upload.initialize(getServletConfig(), request, response);
+    		  try{
+        		  upload.setAllowedFilesList("pdf");         // å…è®¸ä¸Šä¼ çš„æ–‡ä»¶ç±»å‹  
+        		  upload.setDeniedFilesList("exe,bat,,jsp"); // æ‹’ç»ä¸Šä¼ çš„æ–‡ä»¶ç±»å‹  
+        		  upload.setMaxFileSize(1024*1024);          // å…è®¸ä¸Šä¼ æ–‡ä»¶çš„å•ä¸ªæœ€å¤§å¤§å° ä¸º1M
+        		  upload.setTotalMaxFileSize(1024*1024*2);   // å…è®¸ä¸Šä¼ æ–‡ä»¶çš„æœ€å¤§å¤§å°æ€»å’Œä¸º2M
+        		  upload.upload(); // ä¸Šä¼ æ•°æ®
+    		  } catch (Exception e){
+    		      success = BenchmarkState.InvalidFileCode;
+    		      String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.InvalidFileDescription + "\"}";
+                  out.println(str);
+                  return;
     		  }
     		  
+    		  // æ£€æŸ¥æ–‡ä»¶æ˜¯å¦ä¸Šä¼ æˆåŠŸ
+    		  email = req.getParameter("email");
+    		  if (upload.getFiles().getCount() <= 0 || (email == null || email.isEmpty())){
+    		      success = BenchmarkState.FailtoUplaodFileCode;
+                  String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.FailtoUplaodFileDescription + "\"}";
+                  out.println(str);
+                  return;
+    		  }
+    		  
+    		  // è·å–ç®€å†æ–‡ä»¶å
+    		  String filename = upload.getFiles().getFile(0).getFileName(); // è·å–ç®€å†æ–‡ä»¶å
+    		  if (DebugConfig.DEBUG_OUTPUT){
+    		      System.out.println(filename);
+    		  }
+    		  resumeFilename = filename;
+    		  
+    		  // æ£€æµ‹è¯¥é‚®ç®±å¯¹åº”çš„ç”¨æˆ·æ˜¯å¦å·²ç»æ³¨å†Œ
     		  userDao userfindid = new userDao();
     		  user_id = userfindid.Find_UserId(email);
     		  if (user_id == -1){ // The user doesn't exist
-    		      System.out.println("Email Servlet: user is not existed");
+    		      success = BenchmarkState.NoUserCode;
+    		      String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.NoUserCode + "\"}";
+                  out.println(str);
     		      return;
     		  }
+    		  
+    		  // ä¿å­˜ç®€å†è‡³ PathManager->ResumePath
+    		  SaveResumeDao saveresumedao = new SaveResumeDao();
+    		  Date date = new Date();
+    		  TimeZone chinaTimezone = TimeZone.getTimeZone("Asia/Shanghai");
+    		  SimpleDateFormat upload_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    		  upload_time.setTimeZone(chinaTimezone);
+    		  if (DebugConfig.DEBUG_OUTPUT){
+    		      System.out.println(upload_time.format(date));
+    		  }
+    		  
+    		  SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHMMSS");  
+    		  sdf.setTimeZone(chinaTimezone);
+    		  String mappedResumeFilename = sdf.format(date) + "-" + String.valueOf(user_id) + ".pdf";
+    		  String actualResumeFilePath = pathManager.GetResumeFolderPath() + separator + mappedResumeFilename;
+
+    		  // ä¿å­˜ç®€å†æ–‡ä»¶
+    		  try {
+    		      upload.getFiles().getFile(0).saveAs(actualResumeFilePath);
+    		  } catch (SmartUploadException e) {
+    		      e.printStackTrace();
+    		      
+    		      // Output
+    		      success = BenchmarkState.FailtoUplaodFileCode;
+    		      String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.FailtoUplaodFileDescription + "\"}";
+    		      out.println(str);
+    		      return;
+    		  }
+    		  
+    		  // æ£€æµ‹ç®€å†æ˜¯å¦ä¸ºä¸­æ–‡
+    		  if (!IsChineseResume(actualResumeFilePath)){
+    		      success = BenchmarkState.NonChineseFileCode;
+    		      String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.NonChineseFileCode + "\"}";
+                  out.println(str);
+                  return;
+    		  }
     		 
-    		 // Get user info
-    		  userEmail = email;
-    		 userName = userfindid.QueryUserName(user_id);
-    		 
-    		 // Query the upload reumses
+    		 // æŸ¥è¯¢è¯¥ç”¨æˆ·ä¹‹å‰ä¸Šä¼ çš„ç®€å†æ–‡ä»¶
     		 SaveResumeDao resumeDB = new SaveResumeDao();
     	     List<resume> uploadedResumeList = resumeDB.GetUserAllUploadedResumes((int)user_id);
+    	     FilterResumeList(uploadedResumeList, -1l, pathManager.GetBenchmarkFolderPath(), separator); // è¿‡æ»¤resume list
+    	     for (resume r : uploadedResumeList){
+    	         System.out.println("Uploaded resume id: " + r.getId());
+    	     }
+ 
     	     if (uploadedResumeList != null && uploadedResumeList.size()>MAX_RESUME_NUM){
-    	         success = false;
-	             String str ="{"+ "\"state\":" + success +", \"reason\":\"" + "Ã¿¸öÓÃ»§×î¶àÖ»ÄÜÉÏ´«Èı·İ¼òÀú£¡" + "\"}";
+    	         success = BenchmarkState.ExceedMaxFreeUploadTimesCode;
+	             String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.ExceedMaxFreeUploadTimesDescription + "\"}";
 	             out.println(str);
 	             return;
     	     }
     	     
-    		 SaveResumeDao saveresumedao = new SaveResumeDao();
-    		 Date date = new Date();
-    		 SimpleDateFormat upload_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    		 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHMMSS");  
-    		
-    		 String mappedResumeFilename = sdf.format(date) + "-" + String.valueOf(user_id) + ".pdf";
-    		 String actualResumeFilePath = pathManager.GetResumeFolderPath() + separator + mappedResumeFilename;
-    		 
-    		 // Insert resume information into database
-    		 saveresumedao.SaveResume(user_id, upload_time.format(date), resumeFilename, actualResumeFilePath);
-    		 
-    		 upload.getFiles().getFile(0).saveAs(actualResumeFilePath);
-    		 System.out.println("Email Servlet: insert user resume record in DB successfully");
-    		
-    		// Send file into QQ mail box
+    		// Backup the file with QQ Mailbox and send response email to user
 	        com.jspsmart.upload.File tempFile = upload.getFiles().getFile(0);
-	        //MailUtil.SendResumeFileToQQMailBox(tempFile, actualResumeFilePath, email, "1922884165@qq.com", "1922884165@qq.com");
-	        //SendReceiveResumeResponseEmailToUser(email, upload.getFiles().getFile(0).getFileName());
+	        SendReceiveResumeResponseEmailToUser(email, resumeFilename);
+	        MailUtil.SendResumeFileToQQMailBox(tempFile, actualResumeFilePath, email, "1922884165@qq.com", "1922884165@qq.com");
 	        System.out.println("Send email successfully");
-    	        
-		} catch (SQLException e) {
-           e.printStackTrace();
-           // Output
-           success = false;
-           String str ="{"+ "\"state\":" + success +", \"reason\":\"" + "ÎŞ·¨Á¬½Óµ½·şÎñÆ÷£¬ÇëÉÔºóÔÙÊÔ£¡" + "\"}";
-           out.println(str);
-           return;
-        } catch (SmartUploadException e){  
+	        
+	        // Insert resume information into database
+	        saveresumedao.SaveResume(user_id, upload_time.format(date), resumeFilename, actualResumeFilePath);
+	        System.out.println("Email Servlet: insert user resume record in DB successfully");
+		} catch (Exception e){
 		    e.printStackTrace(); 
+		    
 		    // Output
-		    success = false;
-            String str ="{"+ "\"state\":" + success +", \"reason\":\"" + "ÎŞ·¨Á¬½Óµ½·şÎñÆ÷£¬ÇëÉÔºóÔÙÊÔ£¡" + "\"}";
+		    success = BenchmarkState.FailtoUplaodFileCode;
+            String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.FailtoUplaodFileDescription + "\"}";
             out.println(str);
 		    return;
-		} catch(UnsupportedEncodingException e){
-		    e.printStackTrace();
 		}
-
-		// »ñÈ¡UserIDµÄËùÓĞ¼òÀú
+		
+		// è·å–UserIDçš„æ‰€æœ‰ç®€å†ï¼Œè¿‡æ»¤ä¹‹å‰ä¸Šä¼ ä½†åˆ†æå¤±è´¥çš„æ–‡ä»¶
 		SaveResumeDao resumeDB = new SaveResumeDao();
 		List<resume> resumeList = resumeDB.GetUserAllUploadedResumes((int)user_id);
-					  
-		// Éú³ÉÓÃ»§ & ¼òÀú²âÆÀÎÄ¼ş¼Ğ
+		long latest_uploaded_index = 0;
+        for (int i=0; i<resumeList.size(); ++i){
+            long resume_id = resumeList.get(i).getId();
+            if (resume_id > latest_uploaded_index){
+                latest_uploaded_index = resume_id;
+            }
+        }
+		FilterResumeList(resumeList, latest_uploaded_index, pathManager.GetBenchmarkFolderPath(),separator); // è¿‡æ»¤resume list
+        // Sort the resume by resume id
+        Collections.sort(resumeList,new Comparator<resume>(){  
+            public int compare(resume arg0, resume arg1) {  
+                return (new Long(arg1.getId())).compareTo(new Long(arg0.getId()));
+            }  
+        });
+		for (resume r : resumeList){
+            System.out.println("Uploaded resume id: " + r.getId());
+        }
+		
+		// ç”Ÿæˆç”¨æˆ· & ç®€å†æµ‹è¯„æ–‡ä»¶å¤¹
 		String userPath = pathManager.GetUserFolderPath() + separator + String.valueOf(user_id);
 		File userFile = new File(userPath);
 		if (!userFile.exists()){
@@ -341,15 +222,25 @@ public class EmailServlet extends HttpServlet {
 		}
 		  
 		// Update user dashboard page and corresponding benchmark pages
-		System.out.println("Start to update user dashboard");
-		UpdateDashboardPage(serverRootPath, userEmail, resumeList);
-		success = true;
-		
-		String dashboard_url = PathManager.GetWebSiteUserPath() + "/" + String.valueOf(user_id) 
-		        + "/dashboard.jsp?tabtype=dashboard";
-        String str ="{"+ "\"state\":" + success +", \"transferPage\":\"" + dashboard_url + "\"}";
-        System.out.println(str);
-        out.println(str);
+		try{
+    		System.out.println("Start to update user dashboard");
+    		UpdateDashboardPage(serverRootPath, email, resumeList);
+    		success = BenchmarkState.SuccessCode;
+    		
+    		String dashboard_url = PathManager.GetWebSiteUserPath() + "/" + String.valueOf(user_id) 
+    		        + "/dashboard.jsp?tabtype=dashboard";
+            String str ="{"+ "\"state\":" + success +", \"transferPage\":\"" + dashboard_url + "\"}";
+            System.out.println(str);
+            out.println(str);
+		} catch (Exception e) {
+            e.printStackTrace();
+            
+            // Ouput 
+            success = BenchmarkState.FailtoAnalyseResumeCode;
+            String str ="{"+ "\"state\":" + success +", \"reason\":\"" + BenchmarkState.FailtoAnalyseResumeDescription + "\"}";
+            out.println(str);
+            return;
+        }
 	}
 
 	/**
@@ -358,4 +249,235 @@ public class EmailServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request,response);
 	}
+	
+	// è¿‡æ»¤ç®€å†åˆ—è¡¨ï¼Œå»é™¤æ²¡æœ‰æˆåŠŸæµ‹è¯„çš„ç®€å†
+	void FilterResumeList(List<resume> resumeList, Long new_resume_id, String benchmark_dir, String separator){
+	    Iterator<resume> resume_iter = resumeList.iterator();
+        while(resume_iter.hasNext()){
+            long resume_id = resume_iter.next().getId();
+            if (new_resume_id != -1 && resume_id == new_resume_id){
+                continue;
+            }
+            String benchmark_page = benchmark_dir + separator + String.valueOf(resume_id) +
+                    separator + "benchmark.jsp";
+            File benchmark_pageFile = new File(benchmark_page);
+            if(!benchmark_pageFile.exists()){
+                resume_iter.remove();
+            }
+        }
+	}
+	
+	// è·å–ä¸€æ®µæ–‡æœ¬ä¸­çš„ä¸­æ–‡å­—æ•°
+	long GetChineseWordsNum(String str){
+	    long wordsNum = 0;
+	    Pattern zhCharPattern = Pattern.compile("[\u4e00-\u9fa5]");
+	    Matcher zhCharMatcher = zhCharPattern.matcher(str);
+        while (zhCharMatcher.find()){ wordsNum += 1; }
+        
+        return wordsNum;
+	}
+	
+	// åˆ¤æ–­ä¸Šä¼ çš„æ–‡ä»¶æ˜¯å¦ä¸ºä¸­æ–‡ç®€å†
+	public boolean IsChineseResume(String resumeFilename){
+	    if (!(resumeFilename.endsWith(".pdf") || resumeFilename.endsWith(".PDF"))){
+	        return false;
+	    }
+	    
+	    try {
+            PDDocument document = PDDocument.load(new File(resumeFilename));
+            PDFTextStripper stripper = new PDFTextStripper();
+            stripper.setSortByPosition(true);
+            String resumeWords = stripper.getText(document);
+            document.close();
+            
+            // ç»Ÿè®¡ä¸­æ–‡å­—æ•°
+            long words_num = GetChineseWordsNum(resumeWords);
+            if (words_num <= ResumeBenchmark.WordNumber_Threshold1){ // threshold_1 is the minimum words of resume
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
+    // Load benchmark score from JSON file
+    public BenchmarkScore LoadBenchmarkScoreFromJSON(String jsonFilename) throws FileNotFoundException, JSONException, IOException{
+        if (jsonFilename == null || !jsonFilename.endsWith(".json")){
+            return null;
+        }
+        BenchmarkScore benchmarkScore = new BenchmarkScore();
+        benchmarkScore.parseBenchmarkScoreJSONFile(jsonFilename);
+        return benchmarkScore;
+    }
+        
+    // Generate resume thumbnails
+    public void GenerateUserResumeThumbnails(String serverRootPath,List<resume> resumeList){
+        if (resumeList.isEmpty()){ return; }
+        
+        String separator = PathManager.SystemPathSeparator;
+        long user_id = resumeList.get(0).getUserid();
+        PathManager pathManager  = new PathManager(serverRootPath);
+   
+        String thumbnail_path = pathManager.GetUserFolderPath() + separator + String.valueOf(user_id) +  separator + "thumbnail";
+        String thumbnail_large_path = pathManager.GetUserFolderPath() + separator + String.valueOf(user_id) + separator + "thumbnail-large";
+        
+        // Check whether the thumbnail folder exists
+        File thumbnail_file = new File(thumbnail_path);
+        if (!thumbnail_file.exists()){
+            thumbnail_file.mkdirs();
+        }
+        File thumbnail_large_file = new File(thumbnail_large_path);
+        if (!thumbnail_large_file.exists()){
+            thumbnail_large_file.mkdirs();
+        }
+        
+        ConvertPDFToPng converter = new ConvertPDFToPng();
+        for (int i=0; i<resumeList.size(); ++i){
+            String resume_filename = resumeList.get(i).getFilepath(); 
+            
+            // Start to generate thumbnails for resume file
+            if (resume_filename.endsWith(".pdf") || resume_filename.endsWith(".PDF")){
+                long resume_id = resumeList.get(i).getId();
+                String thumbnail_filename = thumbnail_path + separator + "resume-" + String.valueOf(resume_id) + ".png";
+                String thumbnail_large_filename = thumbnail_large_path + separator + "resume-" + String.valueOf(resume_id) + ".png";
+                converter.GenerateThumbnails(resume_filename, thumbnail_filename, 0);
+                converter.GenerateThumbnails(resume_filename, thumbnail_large_filename, 1);
+            }
+        }
+    }
+        
+    // Generate resume benchmark page
+    public List<BenchmarkScore> GenerateResumeBenchmarkPage(String serverRootPath, String userEmail, List<resume> resumeList) throws FileNotFoundException, JSONException, IOException{
+        if (resumeList.isEmpty()){ return null; }
+        
+        // Get user id and initialize benchmark scores list
+        long user_id = resumeList.get(0).getUserid();
+        String separator = PathManager.SystemPathSeparator;
+        List<BenchmarkScore> allBenchmarkScores = new ArrayList<BenchmarkScore>();
+        
+        // Process each PDF resume file, and compute the benchmark score
+        BenchmarkScore benchmarkScore = null;
+        PathManager pathManager = new PathManager(serverRootPath);
+        
+        // Find the latest uploaded file
+        long latest_uploaded_index = 0;
+        for (int i=0; i<resumeList.size(); ++i){
+            long resume_id = resumeList.get(i).getId();
+            if (resume_id > latest_uploaded_index){
+                latest_uploaded_index = resume_id;
+            }
+        }
+        
+        // éå†æ‰€æœ‰ç®€å†ï¼Œè·å–æ‰€æœ‰ç®€å†çš„è¯„æµ‹ç»“æœ
+        for (int i=0; i<resumeList.size(); ++i){
+            long resume_id = resumeList.get(i).getId();
+            String dest_dir = pathManager.GetBenchmarkFolderPath() + separator + String.valueOf(resume_id);
+            
+            // åˆ¤æ–­è¯¥ç®€å†æ˜¯å¦æ˜¯æœ€æ–°ä¸Šä¼ çš„ç®€å†
+            if (resume_id != latest_uploaded_index){
+                // æ£€æŸ¥æ˜¯å¦æˆåŠŸç”Ÿæˆäº† benchmark.jspæ–‡ä»¶
+                String benchmarkPageName = dest_dir + separator + "benchmark.jsp";
+                File benchmarkPageFile = new File(benchmarkPageName);
+                if (benchmarkPageFile.exists()){
+                    // å¦‚æœæ–‡ä»¶å­˜åœ¨ï¼ŒåŠ è½½benchmark json
+                    String jsonFilename = dest_dir + separator + "benchmark.json";
+                    benchmarkScore = LoadBenchmarkScoreFromJSON(jsonFilename);
+                    
+                    if (benchmarkScore != null){
+                        allBenchmarkScores.add(benchmarkScore);
+                    }
+                } else{
+                    continue;
+                }
+            }
+            // å¦‚æœè¯¥æ–‡ä»¶æ˜¯æ–°ä¸Šä¼ çš„ç®€å†
+            else{
+                File htmlResumeFolder = new File(dest_dir);
+                if (!htmlResumeFolder.exists()){
+                    htmlResumeFolder.mkdirs();
+                }
+                String resumeFilename = resumeList.get(i).getFilepath();
+                
+                // ä½¿ç”¨pdf2htmlExå°†pdfè½¬åŒ–ä¸ºhtml
+                System.out.println("Convert PDF resume into HTML pages");
+                ConvertPDFToHtml.PDF2HtmlEx(resumeFilename, dest_dir, "resume.html");
+                
+                // è¿›è¡Œç®€å†è¯„æµ‹
+                System.out.println("Start to compute resume " + resume_id + " benchmark");
+                // Waring: check the resume filename to prevent from the complex resume filename;
+                //         If the resume filename contains some special characters, WE SHOULD TEST !!!
+                ResumeBenchmark resumeBenchmark = new ResumeBenchmark(resumeFilename);
+                benchmarkScore = resumeBenchmark.ComputeResumeBenchmarkScore(serverRootPath);
+                benchmarkScore.setUserId(user_id);
+                benchmarkScore.setResumeId(resume_id);
+                benchmarkScore.setResumeFilename(resumeList.get(i).getFilename());
+                benchmarkScore.setResumePath(resumeFilename);
+                
+                String benchmarkScoreOutputJSONFilename = pathManager.GetBenchmarkFolderPath() + separator + 
+                        String.valueOf(resume_id) + separator + "benchmark.json";
+                benchmarkScore.saveBenchmarkScore(benchmarkScoreOutputJSONFilename);
+                
+                // Generate resume benchmark page
+                resumeBenchmark.setUsername(userEmail);
+                resumeBenchmark.setUserEmail(userEmail);
+                resumeBenchmark.GenerateBenchmarkPage(serverRootPath, resume_id);
+                
+                allBenchmarkScores.add(benchmarkScore);
+            }
+        }
+        return allBenchmarkScores;
+    }
+        
+    // Update user dashboard page
+    public void UpdateDashboardPage(String serverRootPath, String userEmail, List<resume> resumeList) throws FileNotFoundException, JSONException, IOException{
+        if (resumeList.isEmpty()){ return; }
+        long user_id = resumeList.get(0).getUserid();
+        
+        // Generate user resume thumbnails
+        String separator = PathManager.SystemPathSeparator;
+        PathManager pathManager = new PathManager(serverRootPath);
+        GenerateUserResumeThumbnails(serverRootPath,resumeList);
+        
+        // Generate resume benchmark page
+        String userPath = pathManager.GetUserFolderPath();
+        String dashboardJSONName = userPath + separator + String.valueOf(user_id) + separator + "dashboard.json";
+        List<BenchmarkScore> allBenchmarkScores = GenerateResumeBenchmarkPage(serverRootPath, userEmail, resumeList);
+        if (!allBenchmarkScores.isEmpty()){
+            BenchmarkScore.saveBenchmarkScoreList(allBenchmarkScores, dashboardJSONName);
+        }
+        System.out.println("Start to generate benchmark page");
+        
+        // Use dashboard template to generate a new dashboard page
+        PageGenerator pageGenerator = new PageGenerator();
+        String dashboard_template = pathManager.GetTemplateFolderPath() + separator + "dashboard-template.html";
+        String addButtonImage = PathManager.GetImagePath() + "/add.png";
+        pageGenerator.setDashboard_Template(dashboard_template);
+        pageGenerator.setUploadResumeImageName(addButtonImage);
+        
+        String dashboardPageName = userPath + separator + String.valueOf(user_id) + separator + "dashboard.jsp";
+        try {
+            String dashboardScoresForClient = BenchmarkScore.GenerateBenchmarkScoreForClient(allBenchmarkScores);
+            pageGenerator.setUserName(userEmail);
+            pageGenerator.setUserEmail(userEmail);
+            pageGenerator.CreateDashboardPage(resumeList, dashboardScoresForClient, dashboardPageName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Finish to generate benchmark page");
+    }
+    
+    // Send response email to user for receiving the upload resume
+    public void SendReceiveResumeResponseEmailToUser(String userEmail, String resumeFilename) throws Exception{
+        String subject = "opencv.expertå·²æ”¶åˆ°æ‚¨ä¸Šä¼ çš„ç®€å†";
+        String content = "<div style=\"width: 650px; margin: 0 auto; padding: 40px 20px; background-color: #f5f5f5; color: #000; text-align: center; font-size: 17px\">" +
+                "<h3 style=\"font-size: 20px; line-height: 20px; text-align: center;\">" +
+                "ç®€å†å¸®<br/>å…¨å›½ç¬¬ä¸€æ¬¾äººå·¥æ™ºèƒ½ â€œæµ‹ç®€å†ã€æ”¹ç®€å†â€ å·¥å…·" + 
+                "</h3>" +
+                "<p>" + userEmail + "ï¼Œä½ å¥½ï¼æˆ‘ä»¬å·²ç»æ”¶åˆ°æ‚¨ä¸Šä¼ çš„ç®€å†ï¼Œè¯„æµ‹ç³»ç»Ÿæ­£åœ¨åˆ†æä½ çš„ç®€å†ï¼Œç¨åå³å¯è¿›å…¥è¯„æµ‹é¡µé¢æŸ¥çœ‹è¯¦ç»†ä¿¡æ¯" + "ã€‚<br/>" +
+                "</p>"+
+                "</div>";
+        MailUtil.SendHtmlMessage("", userEmail, subject, content);
+    }
 }

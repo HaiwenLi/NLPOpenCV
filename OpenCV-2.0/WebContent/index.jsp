@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-CN">
 <head>
-<title>OpenCV 简历评测与提升</title>
+<title>简历评测与提升</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,7 +54,7 @@
 					class="icon-bar"></span>
 			</button>
 			<a id="indexPage" href="index.jsp">
-				<p style="font-size: 26px; font-weight: 600;">OpenCV</p>
+				<p style="font-size: 26px; font-weight: 600;">简历帮</p>
 				<p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p>
 			</a>
 		</div>
@@ -77,6 +77,10 @@
 		<div class="modal-dialog modal-narrow">
 			<div class="modal-content">
 				<div class="modal-body">
+					<div>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true" stype="margin-right: 20px">&times;</button>
+					</div>
 					<div class="login-wrapper">
 						<div class="box">
 							<div class="content-wrap">
@@ -110,20 +114,24 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body">
+					<div>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true" stype="margin-right: 20px">&times;</button>
+					</div>
 					<div class="login-wrapper">
 						<div class="box">
 							<div class="content-wrap">
-								<h6>欢迎使用OpenCV</h6>
+								<h6>欢迎使用简历帮</h6>
 								<p class="signup-welcome">
-									你好!</br>请输入以下内容，即将开始使用OpenCV
+									你好!</br>请输入以下内容，即将开始使用简历帮
 								</p>
 								<input id="signup-name" class="form-control" type="text"
 									placeholder="用户名">
-								<p id="signup-name-errorbar" class="validation-error-class hide">用户名为6-20位的英文字母、数字</p>
+								<p id="signup-name-errorbar" class="validation-error-class hide">用户名为6-20位英文字母、数字</p>
 								<input id="signup-passwd" class="form-control" type="password"
 									placeholder="创建密码">
 								<p id="signup-passwd-errorbar"
-									class="validation-error-class hide">密码为8-20位的英文字母、数字或符号（点、下划线）</p>
+									class="validation-error-class hide">密码为8-20位英文字母、数字或符号（点、下划线）</p>
 								<input id="signup-passwd-confirm" class="form-control"
 									type="password" placeholder="确认密码">
 								<p id="signup-passwd-confirm-errorbar"
@@ -154,7 +162,7 @@
 						<img src="images/icon/upload.png"></img>
 						<h3>上传</h3>
 						<p>
-							一键上传</br> Word版简历</br> 超简单！
+							一键上传</br> PDF版简历</br> 超简单！
 						</p>
 					</div>
 
@@ -244,7 +252,7 @@
 								人工智能</br>Artificial Intelligence
 							</h4>
 							<p>应用自然语言处理 (Natural Language Processing) 和机器学习 (Machine
-								Learning)。OpenCV进行简历语义解读，识别出你的领域、优势、能力，通过尖端算法产生简历提升的个性化意见。</p>
+								Learning)。&quot;简历帮&quot;进行简历语义解读，识别出你的领域、优势、能力，通过尖端算法产生简历提升的个性化意见。</p>
 						</div>
 					</div>
 
@@ -255,7 +263,7 @@
 							<h4>
 								简历数据库</br>Resume Dataset
 							</h4>
-							<p>建立名校名企简历数据库。OpenCV对简历文句进行上百项参数的分类、标记和分析，帮助用户匹配与自己相关度最高的范本简历，产出细化到句的提升方案。</p>
+							<p>建立名校名企简历数据库。&quot;简历帮&quot;对简历文句进行上百项参数的分类、标记和分析，帮助用户匹配与自己相关度最高的范本简历，产出细化到句的提升方案。</p>
 						</div>
 					</div>
 
@@ -266,7 +274,7 @@
 							<h4>
 								标杆分析</br>Benchmark Analysis
 							</h4>
-							<p>横向进行标杆分析。OpenCV采取浮动式评测打分，周期性回顾个体简历与全体简历在多项维度上的对比。使用的用户越多，标杆整体用户的评测越精准，越能够帮助用户了解自身所处的水平及待提高的能力项。</p>
+							<p>横向进行标杆分析。&quot;简历帮&quot;采取浮动式评测打分，周期性回顾个体简历与全体简历在多项维度上的对比。使用的用户越多，标杆整体用户的评测越精准，越能够帮助用户了解自身所处的水平及待提高的能力项。</p>
 						</div>
 					</div>
 				</div>
@@ -276,7 +284,7 @@
 		<!-- Customer feedbacks and logos -->
 		<div class="customers-feedback">
 			<div class="container">
-				<h3>我们都在使用OpenCV</h3>
+				<h3>我们都在使用简历帮</h3>
 				<div class="row">
 					<div class="col-sm-12" style="padding-top: 25px;">
 						<div
@@ -288,7 +296,7 @@
 						</div>
 						<div class="col-xs-8 col-sm-8 customers-feedback-content">
 							<p>
-								“OpenCV是我用过的最好的简历修改产品。我在OpenCV的帮助下申请并进入了斯坦福的PHD项目。这个暑假我申请实习，我又通过OpenCV完善了简历，拿到了5家公司的面试和2个Offer。但是最后我选择加入OpenCV实习。我喜欢这里的极客精神和工程师精神。”
+								“简历帮是我用过的最好的简历修改产品。我在简历帮的帮助下申请并进入了斯坦福的PHD项目。这个暑假我申请实习，我又通过简历帮完善了简历，拿到了5家公司的面试和2个Offer。但是最后我选择加入简历帮实习。我喜欢这里的极客精神和工程师精神。”
 							</p>
 						</div>
 					</div>
@@ -304,7 +312,7 @@
 		<div class="container">
 			<div class="welcome">
 				<a id="uploadPage" class="hide" href="upload.jsp" target="_blank"></a>
-				<p class="banner">立刻使用OpenCV，提升第一竞争力！</p>
+				<p class="banner">立刻使用简历帮，提升第一竞争力！</p>
 				<div class="upload-block">
 					<button id="uploadbtn" class="uploadbtn" data-toggle="modal">一键免费评测</button>
 				</div>

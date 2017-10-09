@@ -6,6 +6,10 @@ var Current_Window = "Main";
 var current_url = "";
 
 $(document).on("ready",function(){
+	// Set signin and signup modal property
+	$('#signin-modal').modal({backdrop: 'static', keyboard: false, show: false});
+	$('#signup-modal').modal({backdrop: 'static', keyboard: false, show: false});
+
 	Current_Window = "Main";
 	$("a.nav-signin").on("click",function(){
 		PreSignin = false;
@@ -155,23 +159,33 @@ function validate_email(email){
 		return false;
 	}
 	else{
-		if (!email.match(/^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/)){
-			return false;
+		if (email.match(/^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/)){
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
-function validate_passwd(passwd){
-	if (typeof passwd != "string" || passwd.length < 8){
-		return false;
+function checkUsername(username){
+	var str = username;
+	var Expression=/^[A-Za-z0-9]{6,20}$/;
+	var objExp = new RegExp(Expression); //创建正则表达式对象
+	if(objExp.test(str)==true){          //通过正则表达式验证
+	  return true;
+	}else{
+	  return false;
 	}
-	else{
-		if (!passwd.match(/^([\.a-zA-Z0-9_-])/)){
-			return false;
-		}
+}
+
+function checkPassword(passwd){
+	var str=passwd;
+	var Expression=/^([A-Za-z0-9]|[._]){8,20}$/;
+	var objExp = new RegExp(Expression);  //创建正则表达式对象
+	if(objExp.test(str)==true){           //通过正则表达式验证
+	  return true;
+	}else{
+	  return false;
 	}
-	return true;
 }
 
 function preSignin(){
@@ -185,7 +199,7 @@ function preSignin(){
 	}
 	else{
 		Current_Window = "Signin";
-		$("h6.signin-header").html("欢迎使用OpenCV");
+		$("h6.signin-header").html("欢迎使用简历帮");
 		$("p.signin-welcome").removeClass("hide");
 		clearSigninAndSignupContent();
 		$("#signin-modal").modal("show");
@@ -216,7 +230,7 @@ function checkEmailRegistered(email){
 			}
 			else if(status.hasEmail == false){
 				UserEmail = email;
-				$("p.signup-welcome").html(email + "，你好!</br>请输入以下内容，即将开始使用OpenCV");
+				$("p.signup-welcome").html(email + "，你好!</br>请输入以下内容，即将开始使用简历帮");
 				$("#signin-modal").modal("hide");
 				clearSigninAndSignupContent();
 				Current_Window = "Signup";
@@ -289,11 +303,11 @@ function signup(){
 	var passwd = $("#signup-passwd").val();
 	var confirmed_passwd = $("#signup-passwd-confirm").val();
 
-	if (typeof name != "string" || (typeof name == "string" && name.length <= 0)){
+	if (typeof name != "string" || (typeof name == "string" && !checkUsername(name))){
 		$("#signup-name-errorbar").removeClass("hide");
 		return;
 	}
-	if (!validate_passwd(passwd)){
+	if (!checkPassword(passwd)){
 		$("#signup-passwd-errorbar").removeClass("hide");
 		return;
 	}
@@ -314,7 +328,7 @@ function signup(){
 				$("a.nav-signin").addClass("hide");
 				$("a.nav-logout").removeClass("hide");
 				clearSigninAndSignupContent();
-				alert("","欢迎使用OpenCV",function(){
+				alert("","欢迎使用简历帮",function(){
 					Current_Window = "Main";
 					document.getElementById("indexPage").click();}
 				);

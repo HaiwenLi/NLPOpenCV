@@ -176,9 +176,27 @@ audio, video {
 /**
  * Add the correct display in iOS 4-7.
  */
-audio:not ([controls] ) {
-	display: none;
-	height: 0;
+audio
+:not
+ 
+(
+[
+controls
+]
+ 
+)
+{
+display
+:
+ 
+none
+;
+
+	
+height
+:
+ 
+0;
 }
 
 /**
@@ -191,8 +209,21 @@ img {
 /**
  * Hide the overflow in IE.
  */
-svg:not (:root ) {
-	overflow: hidden;
+svg
+:not
+ 
+(
+:root
+ 
+)
+{
+overflow
+:
+ 
+hidden
+;
+
+
 }
 
 /* Forms

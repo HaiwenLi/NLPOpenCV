@@ -50,16 +50,15 @@ function validate_email(email){
 	return true;
 }
 
-function validate_passwd(passwd){
-	if (typeof passwd != "string" || passwd.length < 8){
-		return false;
+function checkPassword(passwd){
+	var str=passwd;
+	var Expression=/^([A-Za-z0-9]|[._]){8,20}$/;
+	var objExp=new RegExp(Expression);  //创建正则表达式对象
+	if(objExp.test(str)==true){         //通过正则表达式验证
+	  return true;
+	}else{
+	  return false;
 	}
-	else{
-		if (!passwd.match(/^([\.a-zA-Z0-9_-])/)){
-			return false;
-		}
-	}
-	return true;
 }
 
 // ----------------------------------------------
@@ -98,19 +97,6 @@ function forgot_password(){
 	}).fail(function(res) {});
 }
 
-//----------------------------------------------
-// Get params in url
-// From: http://blog.csdn.net/kongjiea/article/details/39644623
-//----------------------------------------------
-function getUrlParam(paramName) {  
-    var paramValue = "", isFound = false;  
-    if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {  
-        var arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;  
-        while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++  
-    }  
-    return paramValue == "" && (paramValue = null), paramValue
-} 
-
 // ----------------------------------------------
 // Reset Password
 // ----------------------------------------------
@@ -123,7 +109,7 @@ function reset_password(){
 		$("#user-email-errorbar").removeClass("hide");
 		return;
 	}
-	if (!validate_passwd(passwd)){
+	if (!checkPassword(passwd)){
 		$("#reset-passwd-errorbar").removeClass("hide");
 		return;
 	}
@@ -154,3 +140,16 @@ function reset_password(){
 	}).done(function(res) {
 	}).fail(function(res) {});
 }
+
+//----------------------------------------------
+// Get params in url
+// From: http://blog.csdn.net/kongjiea/article/details/39644623
+//----------------------------------------------
+function getUrlParam(paramName) {  
+    var paramValue = "", isFound = false;  
+    if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {  
+        var arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;  
+        while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++  
+    }  
+    return paramValue == "" && (paramValue = null), paramValue
+} 

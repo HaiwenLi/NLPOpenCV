@@ -18,6 +18,7 @@ import org.json.JSONException;
  */
 public class BenchmarkScore {
 	/* Basic info */
+    public static int MIN_SCORE = 25; // Must be less than 50, all scores less than this will be treated as this value
 	private long user_id;
 	private String username;
 	private long resume_id;
@@ -247,6 +248,9 @@ public class BenchmarkScore {
 	 */
 	public int getResumeScore(){
 		this.resumeScore = (int)((competency_totalScore + presentation_totalScore) * format_totalScore);
+		if (this.resumeScore < MIN_SCORE){
+		    this.resumeScore= MIN_SCORE;
+		}
 		return this.resumeScore;
 	}
 	
@@ -255,37 +259,28 @@ public class BenchmarkScore {
 	 * Parameters:
 	 * scoreOuptputJSONName : the JSON filename for benchmark score, the value is BenchmarkFolder/resume_id/benchmark.json
 	 */
-	public void saveBenchmarkScore(String scoreOuptputJSONName){
+	public void saveBenchmarkScore(String scoreOuptputJSONName) throws JSONException, IOException{
 		JSONObject json = new JSONObject();
 		
 		// Construct JSON Object
-		try{
-			json.put("userId", this.user_id);
-			json.put("username", this.username);
-			json.put("resumeId", this.resume_id);
-			json.put("resumeFilename", this.resumeFilename);
-			json.put("resumePath", this.resumePath);
-			json.put("competencyScore", this.competency_score);
-			json.put("presentationScore", this.presentation_score);
-			json.put("formatScore", this.format_score);
-		} catch(JSONException e){
-	        e.printStackTrace();
-	        return;
-	    }
+		json.put("userId", this.user_id);
+        json.put("username", this.username);
+        json.put("resumeId", this.resume_id);
+        json.put("resumeFilename", this.resumeFilename);
+        json.put("resumePath", this.resumePath);
+        json.put("competencyScore", this.competency_score);
+        json.put("presentationScore", this.presentation_score);
+        json.put("formatScore", this.format_score);
 		
 		// Write JSON data into file
 		File jsonFile = new File(scoreOuptputJSONName);
-		try{
-			if (!jsonFile.exists()) {
-				jsonFile.createNewFile();
-			}
-		   FileWriter fw = new FileWriter(jsonFile);
-		   BufferedWriter bw = new BufferedWriter(fw);
-		   json.write(bw);
-		   bw.close();
-		} catch (IOException e){
-			e.printStackTrace();
-		}
+		if (!jsonFile.exists()) {
+            jsonFile.createNewFile();
+        }
+        FileWriter fw = new FileWriter(jsonFile);
+        BufferedWriter bw = new BufferedWriter(fw);
+        json.write(bw);
+        bw.close();
 	}
 		
 	/*
@@ -320,96 +315,79 @@ public class BenchmarkScore {
 	/*
 	 * Parse benchmark score JSON file into benchmark score object
 	 */
-	public void parseBenchmarkScoreJSONFile(String jsonFilename){
+	public void parseBenchmarkScoreJSONFile(String jsonFilename) throws FileNotFoundException, JSONException, IOException{
 		this.reset();
 		
-		// Read JSON file and parse the file
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(jsonFilename));  
-			String s = null;
-			double [] score = new double[5];
-	        while ((s = br.readLine()) != null) {  
-	            // System.out.println(s);
-	            try {
-	                JSONObject dataJson = new JSONObject(s);
-	                this.setUserId(dataJson.getLong("userId"));
-	                this.setUsername(dataJson.getString("username"));
-	                this.setResumeId(dataJson.getLong("resumeId"));
-	                this.setResumeFilename(dataJson.getString("resumeFilename"));
-	                this.setResumePath(dataJson.getString("resumePath"));
-	                	    			
-	                // Read competency score
-	                JSONArray scoreData = dataJson.getJSONArray("competencyScore");
-	                for (int i = 0; i < scoreData.length(); ++i) {
-	                	score[i] = scoreData.optDouble(i);
-	                }
-	                this.setCompetencyScore(score);
-	                
-	                // Read presentation score
-	                scoreData = dataJson.getJSONArray("presentationScore");
-	                for (int i = 0; i < scoreData.length(); ++i) {
-	                	score[i] = scoreData.optDouble(i);
-	                }
-	                this.setPresentationScore(score);
-	                
-	                // Read format score
-	                scoreData = dataJson.getJSONArray("formatScore");
-	                for (int i = 0; i < scoreData.length(); ++i) {
-	                	score[i] = scoreData.optDouble(i);
-	                }
-	                this.setFormatScore(score);
-	                
-	            } catch (JSONException e) {
-	                e.printStackTrace();  
-	            }  
-	        }
-	        
-	        br.close();
-	        
-	    } catch (FileNotFoundException e) {  
-	        e.printStackTrace();
-	    } catch (IOException e) {
-			e.printStackTrace();
-		}
+	// Read JSON file and parse the file
+		BufferedReader br = new BufferedReader(new FileReader(jsonFilename));  
+		String s = null;
+		double [] score = new double[5];
+        while ((s = br.readLine()) != null) {  
+            // System.out.println(s);
+            JSONObject dataJson = new JSONObject(s);
+            this.setUserId(dataJson.getLong("userId"));
+            this.setUsername(dataJson.getString("username"));
+            this.setResumeId(dataJson.getLong("resumeId"));
+            this.setResumeFilename(dataJson.getString("resumeFilename"));
+            this.setResumePath(dataJson.getString("resumePath"));
+            	    			
+            // Read competency score
+            JSONArray scoreData = dataJson.getJSONArray("competencyScore");
+            for (int i = 0; i < scoreData.length(); ++i) {
+            	score[i] = scoreData.optDouble(i);
+            }
+            this.setCompetencyScore(score);
+            
+            // Read presentation score
+            scoreData = dataJson.getJSONArray("presentationScore");
+            for (int i = 0; i < scoreData.length(); ++i) {
+            	score[i] = scoreData.optDouble(i);
+            }
+            this.setPresentationScore(score);
+            
+            // Read format score
+            scoreData = dataJson.getJSONArray("formatScore");
+            for (int i = 0; i < scoreData.length(); ++i) {
+            	score[i] = scoreData.optDouble(i);
+            }
+            this.setFormatScore(score);  
+        }
+        br.close();
 	}
 	
 	/*
      * Save the benchmark score list as JSON file
      */
-    public static void saveBenchmarkScoreList(List<BenchmarkScore> scoreList, String outputFilename){
+    public static void saveBenchmarkScoreList(List<BenchmarkScore> scoreList, String outputFilename) throws IOException{
         if (outputFilename == null || outputFilename.isEmpty()){
             return;
         }
         
         // Write JSON data into file
         File jsonFile = new File(outputFilename);
-        try{
-            if (!jsonFile.exists()) {
-                jsonFile.createNewFile();
-            }
-            JSONArray jsonArray = new JSONArray();
-            JSONObject jsonObject = null;
-            for (int i=0; i<scoreList.size(); ++i){
-                BenchmarkScore benchmarkScore = scoreList.get(i);
-                jsonObject = new JSONObject();
-                jsonObject.put("userId", benchmarkScore.user_id);
-                jsonObject.put("username", benchmarkScore.username);
-                jsonObject.put("resumeId", benchmarkScore.resume_id);
-                jsonObject.put("resumeFilename", benchmarkScore.resumeFilename);
-                jsonObject.put("resumePath", benchmarkScore.resumePath);
-                jsonObject.put("competencyScore", benchmarkScore.competency_score);
-                jsonObject.put("presentationScore", benchmarkScore.presentation_score);
-                jsonObject.put("formatScore", benchmarkScore.format_score);
-                
-                jsonArray.put(i, jsonObject);
-            }
-            
-            FileWriter fw = new FileWriter(jsonFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            jsonArray.write(bw);
-            bw.close();
-        } catch (IOException e){
-            e.printStackTrace();
+        if (!jsonFile.exists()) {
+            jsonFile.createNewFile();
         }
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = null;
+        for (int i=0; i<scoreList.size(); ++i){
+            BenchmarkScore benchmarkScore = scoreList.get(i);
+            jsonObject = new JSONObject();
+            jsonObject.put("userId", benchmarkScore.user_id);
+            jsonObject.put("username", benchmarkScore.username);
+            jsonObject.put("resumeId", benchmarkScore.resume_id);
+            jsonObject.put("resumeFilename", benchmarkScore.resumeFilename);
+            jsonObject.put("resumePath", benchmarkScore.resumePath);
+            jsonObject.put("competencyScore", benchmarkScore.competency_score);
+            jsonObject.put("presentationScore", benchmarkScore.presentation_score);
+            jsonObject.put("formatScore", benchmarkScore.format_score);
+            
+            jsonArray.put(i, jsonObject);
+        }
+        
+        FileWriter fw = new FileWriter(jsonFile);
+        BufferedWriter bw = new BufferedWriter(fw);
+        jsonArray.write(bw);
+        bw.close();
     }
 }

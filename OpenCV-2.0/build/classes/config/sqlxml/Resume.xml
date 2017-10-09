@@ -23,7 +23,8 @@
 
 	<insert id="insert_resume" parameterType="bean.resume"
 		useGeneratedKeys="true" keyProperty="id">
-		insert into resume(userid,Date,filename,filepath) values
+		insert into
+		resume(userid,Date,filename,filepath) values
 		(#{userid},#{date_time},#{filename},#{filepath})
 	</insert>
 

@@ -9,7 +9,11 @@
 
 <link rel="stylesheet" href="@CSS/resume-base.css" />
 <link rel="stylesheet" href="@CSS/bootstrap.min.css" />
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet"
+	integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+	crossorigin="anonymous">
 <link rel="stylesheet" href="@CSS/BeAlert.css" />
 <link rel="stylesheet" href="@CSS/normalize.css" />
 <link rel="stylesheet" href="@CSS/main.css" />
@@ -29,7 +33,7 @@
 					class="icon-bar"></span>
 			</button>
 			<a id="indexPage" href="@ROOT@index.jsp">
-				<p style="font-size: 26px; font-weight: 600;">OpenCV</p>
+				<p style="font-size: 26px; font-weight: 600;">简历帮</p>
 				<p>人工智能&nbsp;|&nbsp;测简历&nbsp;改简历</p>
 			</a>
 		</div>
@@ -41,7 +45,8 @@
 				</li>
 				<li><a href="@ROOT@team.jsp" target="_blank">我们</a></li>
 				<li class="dropdown"><a href="#" id="username"
-					class="dropdown-toggle" data-toggle="dropdown">Username&nbsp;<b
+					class="dropdown-toggle" data-toggle="dropdown"
+					style="text-transform: lowercase; font-size: 15px">Username&nbsp;<b
 						class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
 						<li class="hide"><a href="#user-center" tabindex="-1"
@@ -73,8 +78,7 @@
 		<div class="row">
 			<div id="left-panel" class="col-md-8" style="padding-right: 0">
 				<!-- Resume content -->
-				<div id="resume-wrapper">
-				</div>
+				<div id="resume-wrapper"></div>
 			</div>
 
 			<!-- Dashboard, Competency, Presentation, Format and Services -->
@@ -528,7 +532,8 @@
 	</div>
 
 	<!-- Modal -->
-	<div class="modal fade" id="preload-modal" tabindex="-1" role="dialog" aria-labelledby="waiting">
+	<div class="modal fade" id="preload-modal" tabindex="-1" role="dialog"
+		aria-labelledby="waiting">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content loader-content">
 				<div class="modal-body">
@@ -555,7 +560,8 @@
 	<script type="text/javascript" src="@JS/BeAlert.js"></script>
 	<a id="uploadPage" class="hide" href="@ROOT@upload.jsp" target="_blank"></a>
 	<a id="PageTransferLink" class="hide" href=""></a>
-	<p id="SigninState" class="hide">@LEFT_BRACKET@%= session.getAttribute("SigninState") %@RIGHT_BRACKET@</p>
+	<p id="SigninState" class="hide">@LEFT_BRACKET@%=
+		session.getAttribute("SigninState") %@RIGHT_BRACKET@</p>
 	<p id="UserEmail" class="hide"></p>
 	<script type="text/javascript">
 	  var viewer = new Viewer();

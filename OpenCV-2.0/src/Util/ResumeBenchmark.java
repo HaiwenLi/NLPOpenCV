@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
@@ -31,6 +30,14 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+/*
+ * ResumeBenchmark è®¡ç®—ç®€å†èƒ½åŠ›ï¼Œè¡¨è¾¾ä»¥åŠæ ¼å¼åˆ†æ•°
+ * å¯¹äºè¯å…¸åŠ è½½æ—¶ï¼Œç”±äºExcelè¯»å–ä¸èƒ½æ­£ç¡®å®šä½è¡Œæ•°ï¼Œå› æ­¤äººä¸ºç¡®å®šè¡Œæ•°ï¼Œ
+ * å¦‚æœè¯å…¸é‡æ–°ç¼–è¾‘ï¼Œéœ€è¦è®¾å®šæ–°çš„è¡Œæ•°ï¼
+ * 
+ * Dateï¼š2017-10-07
+ * Authorï¼šKevin
+ */
 public class ResumeBenchmark {
     // User info
 	private String Username;
@@ -51,12 +58,13 @@ public class ResumeBenchmark {
 	private double[] PageMargins;
 	
 	// Parameters for Competency
-	public static int BENCHMARK_MIN_WORDS = 9;
+	public static int BENCHMARK_MIN_WORDS_INLINE = 11;
 	public static int COMPETENCY_TOPNUM = 5;
 	public static int WordNumber_Threshold1 = 400;
 	public static double Score_Ratio1 = 0.4;
 	public static int WordNumber_Threshold2 = 600;
 	public static double Score_Ratio2 = 0.7;
+	public static int MIN_COMPETENCY_ITEM_SCORE = 1;
 	
 	// Parameters for Presentation
 	public static int RepeatWordsNum = 3;
@@ -87,7 +95,7 @@ public class ResumeBenchmark {
 	
 	//=================================== Common Methods ====================================//
 	
-	// ¼ÓÔØPDFÎÄµµ
+	// åŠ è½½PDFæ–‡æ¡£
 	public PDDocument LoadPdfResume(String filename){
 		PDDocument document = null;
 		
@@ -112,7 +120,7 @@ public class ResumeBenchmark {
 		}
 	}
 	
-	// ÌáÈ¡PDFÖĞµÄÎÄ±¾ĞÅÏ¢
+	// æå–PDFä¸­çš„æ–‡æœ¬ä¿¡æ¯
 	public List<String> ExtractTextFromPdf(PDDocument document){
 		List<String> resumeText = null;
 		
@@ -136,7 +144,7 @@ public class ResumeBenchmark {
 		return resumeText;
 	}
 	
-	// ¼ÓÔØºËĞÄ°å¿é×Öµä
+	// åŠ è½½æ ¸å¿ƒæ¿å—å­—å…¸
 	public void LoadSectionDict(String sectionDictPath) throws FileNotFoundException, IOException {
 		if (ResumeSectionWordsList == null){
 			ResumeSectionWordsList = new ArrayList<String>();
@@ -193,7 +201,7 @@ public class ResumeBenchmark {
 			XSSFWorkbook workbook = new XSSFWorkbook(fis); // Using Apache POI package to read/write excel file
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			int rowStart = sheet.getFirstRowNum()+2;
-			int rowEnd = 460;//sheet.getLastRowNum(); 
+			int rowEnd = 460;// ç›®å‰Excelè¯»å–ä¼šå‡ºç°é”™è¯¯ï¼Œå› æ­¤å¼ºåˆ¶è®¾å®šè¡Œæ•°
 			
 			for (int r = rowStart; r<=rowEnd; ++r){
 				if (sheet.getRow(r) == null){
@@ -232,7 +240,7 @@ public class ResumeBenchmark {
 		}
 	}
 	
-	// ¼ÓÔØ±ÜÃâ´Ê»ã´Ê¿â
+	// åŠ è½½é¿å…è¯æ±‡è¯åº“
 	public void LoadAvoidWordsDict(String avoidWordsPath) throws FileNotFoundException, IOException{
 		if (AvoidWordsList == null){
 			AvoidWordsList = new ArrayList<String>();
@@ -245,11 +253,11 @@ public class ResumeBenchmark {
 			XSSFWorkbook workbook = new XSSFWorkbook(fis);
 			XSSFSheet sheet = workbook.getSheet("Avoided Words");
 			
-			//»ñÈ¡ĞĞ¿ªÊ¼ºÍ½áÎ²
+			//è·å–è¡Œå¼€å§‹å’Œç»“å°¾
 		    int rowStart = 0;
-		    int rowEnd = 104;//sheet.getLastRowNum(); 
+		    int rowEnd = 104;
 		    
-		    //±£´æAvoidWords
+		    //ä¿å­˜AvoidWords
 		    String cellvalueTemp = null;
 	        for(int i = rowStart; i <= rowEnd; ++i) {  
 	        	if(sheet.getRow(i) != null){
@@ -271,8 +279,8 @@ public class ResumeBenchmark {
 		}
 	}
 	
-	// Í³¼ÆÒ»ĞĞ¼òÀúÎÄ±¾×ÖÊı£¨°üÀ¨±êµã·ûºÅ£©
-	// ×¢£ºÊ¹ÓÃÊ±£¬¼ÓÔØ´Ê¿âĞèÒª¡«3s£¡
+	// ç»Ÿè®¡ä¸€è¡Œç®€å†æ–‡æœ¬å­—æ•°ï¼ˆåŒ…æ‹¬æ ‡ç‚¹ç¬¦å·ï¼‰
+	// æ³¨ï¼šä½¿ç”¨æ—¶ï¼ŒåŠ è½½è¯åº“éœ€è¦ï½3sï¼
 	public int GetWordNumber(String sentence){
 		int wordNum = 0;
 		sentence.replace("\\r", "");
@@ -306,7 +314,7 @@ public class ResumeBenchmark {
 	}
 	
 	//=================================== Format Scoring ====================================//
-	// ÔÚÊ¹ÓÃÇ°ĞèÒª¼ÓÔØ´Ê¿â
+	// åœ¨ä½¿ç”¨å‰éœ€è¦åŠ è½½è¯åº“
 	
 	public int GetKeySectionNumber(List<String> resumeText){
 		int keySectionNum = 0;
@@ -328,7 +336,7 @@ public class ResumeBenchmark {
 		return keySectionNum;
 	}
 	
-	// ¼ì²é¼òÀúÖĞµÄ×ÖÌåÃûºÍ×ÖÌå´óĞ¡
+	// æ£€æŸ¥ç®€å†ä¸­çš„å­—ä½“åå’Œå­—ä½“å¤§å°
 	public boolean CheckFontNames_Sizes(PDDocument document){
 		if (document != null){
 			Set<String> fontNames = new HashSet<String>();
@@ -352,19 +360,19 @@ public class ResumeBenchmark {
 			}
 			
 			//  && (this.FontRange[1] <= FontSizeRange[1] && this.FontRange[0] >= FontSizeRange[0]
-			// ÒòÎª×ÖÌå´óĞ¡Ä¿Ç°»ñÈ¡²»Ì«×¼È·£¬³õÆÚÏÈ²»ÓÃ¿¼ÂÇ
+			// å› ä¸ºå­—ä½“å¤§å°ç›®å‰è·å–ä¸å¤ªå‡†ç¡®ï¼ŒåˆæœŸå…ˆä¸ç”¨è€ƒè™‘
 			return (fontNames.size()<= MaxFontFamily);
 		}
 		return false;
 	}
 	
-	// ¼ì²é¼òÀúÒ³±ß¾àÊÇ·ñÂú×ã±ê×¼
+	// æ£€æŸ¥ç®€å†é¡µè¾¹è·æ˜¯å¦æ»¡è¶³æ ‡å‡†
 	public boolean CheckPageMargins(){
-		// Ä¬ÈÏÂú×ã£¬ºóÆÚ¿É½øĞĞ¸üĞÂ
+		// é»˜è®¤æ»¡è¶³ï¼ŒåæœŸå¯è¿›è¡Œæ›´æ–°
 		return true;
 	}
 		
-	// ¼ì²é¼òÀúÖĞÊÇ·ñ´æÔÚÍ¼Æ¬
+	// æ£€æŸ¥ç®€å†ä¸­æ˜¯å¦å­˜åœ¨å›¾ç‰‡
 	public int CheckPageContainsPicture(PDDocument document){
 		int pictureNum = 0; 
 		
@@ -385,7 +393,7 @@ public class ResumeBenchmark {
 		return pictureNum;
 	}
 		
-	// ¼ì²é¼òÀúÖĞÊÇ·ñ´æÔÚ±íµ¥
+	// æ£€æŸ¥ç®€å†ä¸­æ˜¯å¦å­˜åœ¨è¡¨å•
 	public boolean CheckPageContainsForm(PDDocument document){
 		boolean hasForm = false;
 		if (document != null){
@@ -396,14 +404,14 @@ public class ResumeBenchmark {
 		return hasForm;
 	}
 	
-	// ¼ì²é¼òÀúÖĞÊÇ·ñ´æÔÚ±í¸ñ
+	// æ£€æŸ¥ç®€å†ä¸­æ˜¯å¦å­˜åœ¨è¡¨æ ¼
 	public boolean CheckPageContainsTable(PDDocument document){
-		// Ä¬ÈÏ²»´æÔÚ±í¸ñ¡£¾¡¹ÜWordÍ¨¹ı±í¸ñ½¨Á¢£¬µ«ÊÇÔÚPDFÖĞ»á¶ªÊ§±í¸ñ±êÇ©£¬Òò´ËÄÑÒÔÅĞ¶Ï
-		// ºóÆÚ¿É¸ù¾İ¼òÀúÖĞÎÄ±¾µÄÎ»ÖÃ£¬ÅĞ¶ÏPDF¼òÀúÖĞÊÇ·ñ´æÔÚ¶àÀ¸
+		// é»˜è®¤ä¸å­˜åœ¨è¡¨æ ¼ã€‚å°½ç®¡Wordé€šè¿‡è¡¨æ ¼å»ºç«‹ï¼Œä½†æ˜¯åœ¨PDFä¸­ä¼šä¸¢å¤±è¡¨æ ¼æ ‡ç­¾ï¼Œå› æ­¤éš¾ä»¥åˆ¤æ–­
+		// åæœŸå¯æ ¹æ®ç®€å†ä¸­æ–‡æœ¬çš„ä½ç½®ï¼Œåˆ¤æ–­PDFç®€å†ä¸­æ˜¯å¦å­˜åœ¨å¤šæ 
 		return false;
 	}
 	
-	// ¼ÆËãFormat·ÖÊı
+	// è®¡ç®—Formatåˆ†æ•°
 	public double[] ComputeFormatScoreInResume(PDDocument document, List<String> resumeText){
 		double [] score = new double[5];
 		for (int i=0; i<5; ++i){
@@ -438,15 +446,15 @@ public class ResumeBenchmark {
 		if (!(hasPic || hasForm || hasTable)){
 			score[4] = 1;
 		}
-		benchmarkScore.setFormatScore(score); // ±£´æ¸ñÊ½·ÖÊı
+		benchmarkScore.setFormatScore(score); // ä¿å­˜æ ¼å¼åˆ†æ•°
 		
 		return score;
 	}
 	
 	//=================================== Presentation Scoring ====================================//	
-	// ÔÚÊ¹ÓÃÇ°ĞèÒª¼ÓÔØ´Ê¿â
+	// åœ¨ä½¿ç”¨å‰éœ€è¦åŠ è½½è¯åº“
 	
-	//¼ì²éÒ»ĞĞ¼òÀúÎÄ±¾µÄµÚÒ»¸ö´ÊÊÇ·ñÎª¶¯´Ê
+	//æ£€æŸ¥ä¸€è¡Œç®€å†æ–‡æœ¬çš„ç¬¬ä¸€ä¸ªè¯æ˜¯å¦ä¸ºåŠ¨è¯
 	public boolean CheckFirstWordAttr(String sentence){
 		if (sentence.length()<=0){
 			return false;
@@ -472,7 +480,7 @@ public class ResumeBenchmark {
 		}
 	}
 	
-	// ¼ì²éÒ»ĞĞ¼òÀúÎÄ±¾ÖĞÊÇ·ñ´æÔÚÁ¿»¯
+	// æ£€æŸ¥ä¸€è¡Œç®€å†æ–‡æœ¬ä¸­æ˜¯å¦å­˜åœ¨é‡åŒ–
 	public boolean CheckQuantizationInLine(String sentence){
 		if (sentence.length()<=0) {
 			return false;
@@ -493,7 +501,7 @@ public class ResumeBenchmark {
 		}
 	}
 	
-	// ¼ì²éÒ»ĞĞÎÄ±¾ÊÇ·ñÊ¹ÓÃÁË±ÜÃâ´Ê¡£ÔÚÊ¹ÓÃÇ°ÊÇĞèÒªÏÈ¼ÓÔØAvoidWords´Ê¿â£¡
+	// æ£€æŸ¥ä¸€è¡Œæ–‡æœ¬æ˜¯å¦ä½¿ç”¨äº†é¿å…è¯ã€‚åœ¨ä½¿ç”¨å‰æ˜¯éœ€è¦å…ˆåŠ è½½AvoidWordsè¯åº“ï¼
 	public boolean CheckAvoidWords(String ReadLine){
 		boolean hasAvoidWords = false;
 		if (AvoidWordsList != null && !AvoidWordsList.isEmpty()){
@@ -508,7 +516,7 @@ public class ResumeBenchmark {
 		return hasAvoidWords;
 	}
 	
-	// ¼ì²éÒ»ĞĞÎÄ±¾ÖĞÊÇ·ñ³öÏÖ¶à´Î³öÏÖ¹Ø¼ü´Ê
+	// æ£€æŸ¥ä¸€è¡Œæ–‡æœ¬ä¸­æ˜¯å¦å‡ºç°å¤šæ¬¡å‡ºç°å…³é”®è¯
 	public boolean CheckRepeatWords(String strLine, List<String> repeatWordsList){
 		boolean hasRepeatWords = false;
 
@@ -546,7 +554,7 @@ public class ResumeBenchmark {
 	}
 	
 	/*
-	 *  ÌáÈ¡¼òÀúÖĞ¾­Àú°å¿é
+	 *  æå–ç®€å†ä¸­ç»å†æ¿å—
 	 *  Parameter:
 	 *  resumeText: all line texts in resume
 	 */
@@ -560,11 +568,11 @@ public class ResumeBenchmark {
 				String zhText = resumeText.get(i).replaceAll(zh_words,""); //extract all Chinese characters
 				
 				// Use length to determine the beginning of one section
-				if (zhText.length()>=2 && zhText.length()<=BENCHMARK_MIN_WORDS){
+				if (zhText.length()>=2 && zhText.length()<=BENCHMARK_MIN_WORDS_INLINE){
 					int textIndex = ResumeSectionWordsList.indexOf(zhText);
 					if (textIndex >= 0){
-						if ((zhText.contains("¾­Àú")) || zhText.contains("Êµ¼ù")){
-							if (!zhText.contains("½ÌÓı")){
+						if ((zhText.contains("ç»å†")) || zhText.contains("å®è·µ")){
+							if (!zhText.contains("æ•™è‚²")){
 								record = true;
 							} else{ record = false; }
 						} else { record = false; }
@@ -573,7 +581,7 @@ public class ResumeBenchmark {
 				else if (record){
 					String strLine = resumeText.get(i);
 					strLine = strLine.replaceAll("[\\f\\n\\r\\t\\v]+",""); // remove all empty character except for space
-					strLine = strLine.trim().replaceAll(" +", "");// È¥³ıÁ¬Ğø¿Õ¸ñ½ö±£ÁôÒ»¸ö¿Õ¸ñ
+					strLine = strLine.trim().replaceAll(" +", "");// å»é™¤è¿ç»­ç©ºæ ¼ä»…ä¿ç•™ä¸€ä¸ªç©ºæ ¼
 					if (strLine.length() > 0){
 						experienceSection.add(strLine);
 					}
@@ -583,7 +591,7 @@ public class ResumeBenchmark {
 		return experienceSection;
 	}
 	
-	// ÌáÈ¡¼òÀúÖĞµÄ¾­Àú°å¿é£¬Ñ­»·¾­Àú°å¿éµÄËùÓĞĞĞ£¬¼ÆËã×îÖÕµÃ·Ö
+	// æå–ç®€å†ä¸­çš„ç»å†æ¿å—ï¼Œå¾ªç¯ç»å†æ¿å—çš„æ‰€æœ‰è¡Œï¼Œè®¡ç®—æœ€ç»ˆå¾—åˆ†
 	public double[] ComputePresentationScoreInResume(List<String> experienceSection){
 		double[] score = new double[5];
 		int[] lineScore = new int[5];
@@ -596,7 +604,7 @@ public class ResumeBenchmark {
 			lineScore[i] = 0;
 		}
 		
-		// ¼ÇÂ¼presentation´ò·ÖÖĞ¹ı³Ì×´Ì¬
+		// è®°å½•presentationæ‰“åˆ†ä¸­è¿‡ç¨‹çŠ¶æ€
 		if (this.PresentationPageItemsInResume == null){
 			this.PresentationPageItemsInResume = new ArrayList<PresentationPageItem>();
 		} else{
@@ -607,7 +615,7 @@ public class ResumeBenchmark {
 		    repeatWordsList.clear();
 			String strLine = experienceSection.get(i);
 			
-			if (strLine.length()>BENCHMARK_MIN_WORDS){
+			if (strLine.length()>BENCHMARK_MIN_WORDS_INLINE){
 				lineNum += 1;
 				
 				// Presentation 1, check whether the first word is a verb
@@ -659,13 +667,13 @@ public class ResumeBenchmark {
 				score[i] = 0;
 			}
 		}
-		benchmarkScore.setPresentationScore(score); // ±£´æPresentation·ÖÊı
+		benchmarkScore.setPresentationScore(score); // ä¿å­˜Presentationåˆ†æ•°
 		
 		return score;
 	}
 	
 	//=================================== Competency Scoring ====================================//
-	// ½øĞĞÄÜÁ¦´ò·ÖÊ±£¬ĞèÒªÏÈ¼ÓÔØ´Ê¿â
+	// è¿›è¡Œèƒ½åŠ›æ‰“åˆ†æ—¶ï¼Œéœ€è¦å…ˆåŠ è½½è¯åº“
 	
 	// Search key word in one line of resume
 	public void SearchWordSequenceInLine(String strLine, ArrayList<String> wordSeq){
@@ -710,7 +718,7 @@ public class ResumeBenchmark {
 		double[] final_score = new double[5];
 		int wordNumber = 0;
 		
-		// ¼ÇÂ¼Competency´ò·ÖÖĞ¹ı³Ì×´Ì¬
+		// è®°å½•Competencyæ‰“åˆ†ä¸­è¿‡ç¨‹çŠ¶æ€
 		if (this.CompetencyPageItemsInResume == null){
 			this.CompetencyPageItemsInResume = new ArrayList<CompetencyPageItem>();
 		} else{
@@ -721,7 +729,7 @@ public class ResumeBenchmark {
 			String line = lines.get(i);
 			line = line.replaceAll("[\\f\\n\\r\\t\\v]+",""); // remove all empty character except for space
 			line = line.trim().replaceAll(" +","");          // remove continuous spaces
-			if (line.length()<=BENCHMARK_MIN_WORDS){
+			if (line.length()<=BENCHMARK_MIN_WORDS_INLINE){
 				continue;
 			}
 			double[] score = ComputeCompetencyScoreInLine(line);
@@ -757,7 +765,7 @@ public class ResumeBenchmark {
 		final_score[2] = final_score[2]*ratio/wordNumber;
 		final_score[3] = final_score[3]*ratio/wordNumber;
 		final_score[4] = final_score[4]*ratio/wordNumber;
-		benchmarkScore.setCompetencyScore(final_score);; // ±£´æCompetency·ÖÊı
+		benchmarkScore.setCompetencyScore(final_score);; // ä¿å­˜Competencyåˆ†æ•°
 		
 	    return final_score;
 	}
@@ -828,8 +836,8 @@ public class ResumeBenchmark {
 	}
 	
 	// Generate benchmark page and save as JSP file
-	public void GenerateBenchmarkPage(String serverRootPath, long resume_id){
-		// »ñÈ¡benchmarkÒ³ÃæÂ·¾¶
+	public void GenerateBenchmarkPage(String serverRootPath, long resume_id) throws FileNotFoundException, IOException{
+		// è·å–benchmarké¡µé¢è·¯å¾„
 	    String separator = PathManager.SystemPathSeparator;
 		PathManager pathManager = new PathManager(serverRootPath);
 		
@@ -842,76 +850,76 @@ public class ResumeBenchmark {
 		
 		String benchmark_template = pathManager.GetTemplateFolderPath() + separator + "benchmark-template.html";
 		String sampleFilename = pathManager.GetDictFolderPath() + separator + "ResumeSamples.xlsx";
-		try{
-			PageGenerator pageGenerator = new PageGenerator();
-			pageGenerator.setUserName(Username);
-			pageGenerator.setUserEmail(UserEmail);
-			pageGenerator.setBenchmark_Template(benchmark_template);
-			pageGenerator.LoadPresentationSamples(sampleFilename); // Load presentation samples
-			pageGenerator.setBenchmarkFolder(pathManager.GetBenchmarkFolderPath());
-			pageGenerator.setPageNum(this.ResumePage);
-			
-			String[][] competencyItems = new String[5][COMPETENCY_TOPNUM]; //¶şÎ¬Êı×é£¬µÚÒ»Î¬±íÊ¾²»Í¬ÄÜÁ¦Ïî£¬µÚ¶şÎ¬±íÊ¾ÌåÏÖ¸ÃÄÜÁ¦µÄ¼òÀúÎÄ±¾
-			List<CompetencyItemScore> competency_item_scores = new ArrayList<CompetencyItemScore>();
-			
-			// Intialize competency items
-			for (int i=0; i<5; ++i){
-			    for (int j=0; j<COMPETENCY_TOPNUM; ++j){
-			        competencyItems[i][j] = "";
-			    }
-			}
-			
-			if (DebugConfig.DEBUG_OUTPUT){
-			    System.out.println("Output competency items");
-			    for (int i=0; i<CompetencyPageItemsInResume.size(); ++i){
-			        String text = CompetencyPageItemsInResume.get(i).getItemText();
-			        System.out.println(i + ": " + text);
-			    }
-			}
-			
-			if (CompetencyPageItemsInResume.size()>0){
-    			for (int i=0;i<5;++i){
-    				// Find the competency texts
-    				competency_item_scores.clear();
-    				
-    				for (int j=0; j<this.CompetencyPageItemsInResume.size(); ++j){
-    					double [] score = this.CompetencyPageItemsInResume.get(j).getScore();
-    					competency_item_scores.add(new CompetencyItemScore(j,score[i]));
-    				}
-    				
-    				// ½µĞòÅÅÁĞ
-    				Collections.sort(competency_item_scores,new Comparator<CompetencyItemScore>(){  
-    			            public int compare(CompetencyItemScore arg0, CompetencyItemScore arg1) {  
-    			                return arg1.getScore().compareTo(arg0.getScore());
-    			            }  
-    			       });
-    				
-    				/*if (DebugConfig.DEBUG_OUTPUT){
-    				  System.out.println("Output sorting results: ");
-    				  for (int j=0; j<competency_item_scores.size(); ++j){
-    				      System.out.println(competency_item_scores.get(j).getId() + ": " + 
-    				                         competency_item_scores.get(j).getScore());
-    				  }
-    				}*/
-    				
-    				// Select top 3
-    				for (int j=0; j<COMPETENCY_TOPNUM; ++j){
-    					int match_index = competency_item_scores.get(j).getId();
-    					competencyItems[i][j] = CompetencyPageItemsInResume.get(match_index).getItemText();
-    					if (DebugConfig.DEBUG_OUTPUT){
-    					    System.out.println(match_index + ": " + competencyItems[i][j]);
-    					}
-    				}
-    			}
-			}
-			
-			int[] formatRank = benchmarkScore.rankFormatScore();
-			pageGenerator.CreateBenchmarkPage(competencyItems, PresentationPageItemsInResume, formatRank,
-					resume_id, pageFilename);
-		} catch (FileNotFoundException e){
-			e.printStackTrace();
-		} catch (IOException e){
-			e.printStackTrace();
+
+		PageGenerator pageGenerator = new PageGenerator();
+		pageGenerator.setUserName(Username);
+		pageGenerator.setUserEmail(UserEmail);
+		pageGenerator.setBenchmark_Template(benchmark_template);
+		pageGenerator.LoadPresentationSamples(sampleFilename); // Load presentation samples
+		pageGenerator.setBenchmarkFolder(pathManager.GetBenchmarkFolderPath());
+		pageGenerator.setPageNum(this.ResumePage);
+		
+		String[][] competencyItems = new String[5][COMPETENCY_TOPNUM]; //äºŒç»´æ•°ç»„ï¼Œç¬¬ä¸€ç»´è¡¨ç¤ºä¸åŒèƒ½åŠ›é¡¹ï¼Œç¬¬äºŒç»´è¡¨ç¤ºä½“ç°è¯¥èƒ½åŠ›çš„ç®€å†æ–‡æœ¬
+		List<CompetencyItemScore> competency_item_scores = new ArrayList<CompetencyItemScore>();
+		
+		// Intialize competency items
+		for (int i=0; i<5; ++i){
+		    for (int j=0; j<COMPETENCY_TOPNUM; ++j){
+		        competencyItems[i][j] = "";
+		    }
 		}
+		
+		if (DebugConfig.DEBUG_OUTPUT){
+		    System.out.println("Output competency items");
+		    for (int i=0; i<CompetencyPageItemsInResume.size(); ++i){
+		        String text = CompetencyPageItemsInResume.get(i).getItemText();
+		        System.out.println(i + ": " + text);
+		    }
+		}
+		
+		if (CompetencyPageItemsInResume.size()>0){
+			for (int i=0;i<5;++i){
+				// Find the competency texts
+				competency_item_scores.clear();
+				
+				for (int j=0; j<this.CompetencyPageItemsInResume.size(); ++j){
+					double [] score = this.CompetencyPageItemsInResume.get(j).getScore();
+					competency_item_scores.add(new CompetencyItemScore(j,score[i]));
+				}
+				
+				// é™åºæ’åˆ—
+				Collections.sort(competency_item_scores,new Comparator<CompetencyItemScore>(){  
+			            public int compare(CompetencyItemScore arg0, CompetencyItemScore arg1) {  
+			                return arg1.getScore().compareTo(arg0.getScore());
+			            }  
+			       });
+				
+				/*if (DebugConfig.DEBUG_OUTPUT){
+				  System.out.println("Output sorting results: ");
+				  for (int j=0; j<competency_item_scores.size(); ++j){
+				      System.out.println(competency_item_scores.get(j).getId() + ": " + 
+				                         competency_item_scores.get(j).getScore());
+				  }
+				}*/
+				
+				// Select top competency
+				for (int j=0; j<COMPETENCY_TOPNUM; ++j){
+					int match_index = competency_item_scores.get(j).getId();
+					double item_score = competency_item_scores.get(j).getScore();
+					if (item_score >= MIN_COMPETENCY_ITEM_SCORE){
+					    competencyItems[i][j] = CompetencyPageItemsInResume.get(match_index).getItemText();
+					} else{
+					    competencyItems[i][j] = "";
+					}
+					if (DebugConfig.DEBUG_OUTPUT){
+					    System.out.println(match_index + ": " + competencyItems[i][j]);
+					}
+				}
+			}
+		}
+		
+		int[] formatRank = benchmarkScore.rankFormatScore();
+		pageGenerator.CreateBenchmarkPage(competencyItems, PresentationPageItemsInResume, formatRank,
+				resume_id, pageFilename);
 	}
 }
